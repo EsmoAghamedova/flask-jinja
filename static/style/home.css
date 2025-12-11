@@ -127,13 +127,11 @@ nav a:hover {
     justify-content: center;
 }
 
-/* Carousel images */
 .carousel-img {
     height: 350px;
     object-fit: cover;
 }
 
-/* Make carousel arrows white/clean */
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     filter: invert(1);

@@ -48,7 +48,6 @@ nav a:hover {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.75);
 }
 
-/* AUTH BUTTONS */
 .signup-btn {
     background: white;
     color: #004d40;
@@ -65,7 +64,6 @@ nav a:hover {
     font-weight: 600;
 }
 
-/* LOGIN FORM */
 .login-section {
     flex-grow: 1;
     padding: 50px 20px;
@@ -104,7 +102,6 @@ nav a:hover {
     background: #003c30;
 }
 
-/* Links inside form */
 .login-card a {
     color: #004d40;
     font-weight: 600;
@@ -162,7 +159,6 @@ footer {
     opacity: 0.8;
 }
 
-/* RESPONSIVE */
 @media (max-width: 576px) {
     .login-card {
         padding: 30px 15px;

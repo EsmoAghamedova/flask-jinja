@@ -12,7 +12,6 @@ body {
     color: #004d40;
 }
 
-/* HEADER */
 header {
     background-color: #004d40;
     color: white;
@@ -45,7 +44,6 @@ nav a:hover {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.75);
 }
 
-/* AUTH BUTTONS */
 .signup-btn {
     background: white;
     color: #004d40;
@@ -62,7 +60,6 @@ nav a:hover {
     font-weight: 600;
 }
 
-/* HERO */
 .hero {
     text-align: center;
     padding: 50px 20px 20px 20px;
@@ -81,7 +78,6 @@ nav a:hover {
     font-size: 1.1rem;
 }
 
-/* TIPS CARDS */
 .cards-row {
     display: flex;
     align-items: stretch;
@@ -174,7 +170,6 @@ footer {
     opacity: 0.8;
 }
 
-/* RESPONSIVE */
 @media (max-width:768px) {
     .cards-row {
         flex-direction: column;

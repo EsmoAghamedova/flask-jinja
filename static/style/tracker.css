@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
-/* GLOBAL STYLES */
 * {
     margin: 0;
     padding: 0;
@@ -13,7 +12,6 @@ body {
     color: #004d40;
 }
 
-/* HEADER */
 header {
     background-color: #004d40;
     color: white;
@@ -46,7 +44,6 @@ nav a:hover {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.75);
 }
 
-/* AUTH BUTTONS */
 .signup-btn {
     background: white;
     color: #004d40;
@@ -63,7 +60,6 @@ nav a:hover {
     font-weight: 600;
 }
 
-/* HERO SECTION */
 .hero {
     text-align: center;
     padding: 50px 20px 20px 20px;
@@ -97,8 +93,6 @@ nav a:hover {
 .start-btn:hover {
     background: #003c30;
 }
-
-/* TRACKER CARDS */
 
 .cards-row {
     display: flex;
@@ -149,7 +143,6 @@ nav a:hover {
     align-self: center;
 }
 
-/* FOOTER */
 footer {
     background: #1f1f1f;
     color: #eee;
@@ -198,7 +191,6 @@ footer {
     opacity: 0.8;
 }
 
-/* RESPONSIVE FIXES */
 @media (max-width: 768px) {
     .cards-row {
         flex-direction: column;
