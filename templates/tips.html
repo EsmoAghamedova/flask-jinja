@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block title %}CalmSpace - Home{% endblock %} {%
+block content %} {% block css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='style/tips.css') }}"
+/>
+{% endblock %}
+<section class="hero container text-center">
+  <h2>Daily Wellness Tips 🌿</h2>
+  <p>
+    Explore simple, effective tips to boost your mood, focus, and overall
+    wellbeing.
+  </p>
+</section>
+
+<section class="container mt-5">
+  <div class="row g-4 cards-row">
+    {% for t in tips %}
+    <div class="col-md-4 d-flex">
+      <div class="card glass-card text-center p-4 flex-fill card-eq">
+        <h3>{{ t.title }}</h3>
+        <p>{{ t.text }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

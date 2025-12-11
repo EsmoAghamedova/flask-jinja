@@ -1,0 +1,91 @@
+{% extends "base.html" %} {% block title %}CalmSpace - Home{% endblock %} 
+{% block content %} {% block css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='style/home.css') }}"
+/>
+{% endblock %}
+<div
+  id="calmCarousel"
+  class="carousel slide mt-4 container"
+  data-bs-ride="carousel"
+>
+  <div class="carousel-inner rounded-4 shadow-sm">
+    <div class="carousel-item active">
+      <img
+        src="../static/img/bg-1.jpg"
+        class="d-block w-100 carousel-img"
+        alt="..."
+      />
+    </div>
+
+    <div class="carousel-item">
+      <img
+        src="../static/img/bg-2.jpg"
+        class="d-block w-100 carousel-img"
+        alt="..."
+      />
+    </div>
+
+    <div class="carousel-item">
+      <img
+        src="../static/img/bg-3.jpg"
+        class="d-block w-100 carousel-img"
+        alt="..."
+      />
+    </div>
+  </div>
+
+  <button
+    class="carousel-control-prev"
+    type="button"
+    data-bs-target="#calmCarousel"
+    data-bs-slide="prev"
+  >
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+
+  <button
+    class="carousel-control-next"
+    type="button"
+    data-bs-target="#calmCarousel"
+    data-bs-slide="next"
+  >
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+<section class="hero container text-center">
+  <h2>Find Your Calm, Every Day 🌿</h2>
+  <p>
+    Track your mood, organize your goals, and build healthier habits in a
+    peaceful, clean environment.
+  </p>
+  <a href="/tracker" class="start-btn">Start Tracking</a>
+</section>
+
+<section class="container mt-5">
+  <div class="row g-4 cards-row">
+    <div class="col-md-4 d-flex">
+      <div class="card glass-card text-center p-4 flex-fill card-eq">
+        <h3>🌞 Mood Tracker</h3>
+        <p>Record your mood and understand your emotional patterns.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4 d-flex">
+      <div class="card glass-card text-center p-4 flex-fill card-eq">
+        <h3>📝 Daily Goals</h3>
+        <p>Set your top 3 priorities and stay organized.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4 d-flex">
+      <div class="card glass-card text-center p-4 flex-fill card-eq">
+        <h3>💡 Wellness Tips</h3>
+        <p>Discover simple methods to relax, focus, and grow.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
