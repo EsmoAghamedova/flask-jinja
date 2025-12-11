@@ -3,7 +3,7 @@ from flask import Flask, redirect, render_template, request, url_for
 app = Flask(__name__)
 
 users = [
-    {"username": "Gvantsa", "email" : "gvantsa.eusashvili@gmail.com" , "password": "Gvantsa321"},
+    {"username": "Gvantsa", "email" : "gvantsa.euashvili@gmail.com" , "password": "Gvantsa321"},
     {"username": "Esmo", "email" : "esmo.agamedova@gmail.com" , "password": "Esmo123"},
     {"username": "Nini", "email" : "nini.iakobidze@gmail.com" , "password": "Nini456"},
     {"username": "Tedo", "email" : "tedo.ratiani@gmail.com" , "password": "tedo789"},
