@@ -5,13 +5,13 @@
   </div>
 
   <nav class="nav-links">
-    <a href="{{url_for('home')}}">Home</a>
-    <a href="{{url_for('tracker')}}">Tracker</a>
-    <a href="{{url_for('tips')}}">Tips</a>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('tracker') }}">Tracker</a>
+    <a href="{{ url_for('tips') }}">Tips</a>
   </nav>
 
   <nav class="auth-buttons">
-    <a href="{{url_for('signup')}}" class="signup-btn">Sign Up</a>
-    <a href="{{url_for('login')}}" class="login-btn">Log In</a>
+    <a href="{{ url_for('signup') }}" class="signup-btn">Sign Up</a>
+    <a href="{{ url_for('login') }}" class="login-btn">Log In</a>
   </nav>
 </header>

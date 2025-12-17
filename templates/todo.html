@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+  CalmSpace - ToDo
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tracker.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5">
+    <div class="glass-card p-5 mx-auto" style="max-width: 500px;">
+      <h2 class="text-center mb-4">Add New Task 📝</h2>
+
+      <form method="POST">
+  {{ form.hidden_tag() }}
+  {{ form.task(class="form-control mb-2") }}
+  {{ form.detail(class="form-control mb-2") }}
+  {{ form.submit(class="start-btn w-100 mt-3") }}
+</form>
+
+<ul class="list-group mt-3">
+  {% for t in todos %}
+    <li class="list-group-item">
+      <input type="checkbox" {% if t.done %}checked{% endif %}>
+      {{ t.task }} - {{ t.detail }}
+    </li>
+  {% endfor %}
+</ul>
+
+    </div>
+  </section>
+{% endblock %}

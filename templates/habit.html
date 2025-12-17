@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}
+  CalmSpace - Habit Tracker
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tracker.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5">
+    <div class="glass-card p-5 mx-auto" style="max-width: 500px;">
+      <h2 class="text-center mb-4">Track a Habit 🔁</h2>
+
+      <form method="POST">
+  {{ form.hidden_tag() }}
+  {{ form.habit(class="form-control mb-2") }}
+  {{ form.frequency(class="form-control mb-2") }}
+  {{ form.submit(class="start-btn w-100 mt-3") }}
+</form>
+
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th>Habit</th>
+      <th>Frequency</th>
+      <th>Done</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for h in habits %}
+    <tr>
+      <td>{{ h.habit }}</td>
+      <td>{{ h.frequency }}</td>
+      <td><input type="checkbox" {% if h.done %}checked{% endif %}></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+    </div>
+  </section>
+{% endblock %}

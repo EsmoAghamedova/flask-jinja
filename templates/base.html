@@ -4,27 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <link
-      rel="shortcut icon"
-      href="../static/img/leaf.png"
-      type="image/x-icon"
-    />
+    <link rel="shortcut icon" href="../static/img/leaf.png" type="image/x-icon" />
 
-        {% block css %}{% endblock %}
+    {% block css %}
+    {% endblock %}
 
-    <title>{% block title %}{% endblock %}</title>
+    <title>
+      {% block title %}
+      {% endblock %}
+    </title>
   </head>
 
   <body>
-
     {% include 'components/_navbar.html' %}
 
-    {% block content %}{% endblock %}
+    {% block content %}
+    {% endblock %}
 
     {% include 'components/_footer.html' %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
