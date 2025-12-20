@@ -1,101 +1,59 @@
-from flask import Flask, redirect, render_template, request, url_for
-from datetime import datetime
-from forms import MoodForm, ToDoForm, HabitTrackerForm
+from flask import Flask
+from extensions import db
+from routes import main
+import os
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '1234567890'
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'app.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-users = [
-    {"username": "Gvantsa", "email": "gvantsa.euashvili@gmail.com", "password": "Gvantsa321"},
-    {"username": "Esmo", "email": "esmo.agamedova@gmail.com", "password": "Esmo123"},
-    {"username": "Nini", "email": "nini.iakobidze@gmail.com", "password": "Nini456"},
-    {"username": "Tedo", "email": "tedo.ratiani@gmail.com", "password": "tedo789"},
-    {"username": "Zuka", "email": "zuka.abashidze@gmail.com", "password": "Zuka101"}
-]
+db.init_app(app)
 
-tips_list = [
-    {"title": "🧘‍♀️ Meditation", "text": "Spend 5–10 minutes focusing on your breath to reduce stress."},
-    {"title": "🌿 Nature Walks", "text": "Take a walk outside to clear your mind and boost creativity."},
-    {"title": "📓 Journaling", "text": "Write down your thoughts and gratitude to reflect and relax."},
-    {"title": "💧 Hydration", "text": "Drink enough water daily to keep your body and mind fresh."},
-    {"title": "🛌 Sleep Routine", "text": "Go to bed and wake up at consistent times to feel energized."},
-    {"title": "🎵 Music Breaks", "text": "Listen to calming music to recharge and stay focused."}
-]
+# register the blueprint as before
+app.register_blueprint(main)
+# after app.register_blueprint(main)
+print("URL map:")
+for rule in app.url_map.iter_rules():
+    print(rule.endpoint, "->", rule)
 
-@app.route('/')
-def home():
-    return render_template('home.html')
+# ---------------------------------------------------------------------
+# Create top-level alias endpoints so calls like url_for('home') work.
+# This maps the blueprint view functions (e.g. 'main.home') to simple
+# endpoints (e.g. 'home'). Callers that expect 'home' (no blueprint
+# prefix) will stop raising BuildError.
+#
+# NOTE: This is a compatibility helper. The long-term clean solution is
+# to update templates/code to use the blueprint-aware endpoints:
+#   - inside blueprint templates use {{ url_for('.home') }}
+#   - across the app use url_for('main.home')
+# ---------------------------------------------------------------------
+with app.app_context():
+    # Only add aliases when the blueprint view functions exist
+    vf = app.view_functions
 
-@app.route('/tracker')
-def tracker():
-    return render_template('tracker.html')
+    def _add_alias(rule, endpoint, blueprint_view_name, methods=None):
+        view = vf.get(blueprint_view_name)
+        # if the blueprint view exists and the alias endpoint doesn't yet exist, add it
+        if view and endpoint not in vf:
+            if methods:
+                app.add_url_rule(rule, endpoint=endpoint, view_func=view, methods=methods)
+            else:
+                app.add_url_rule(rule, endpoint=endpoint, view_func=view)
 
-moods_list = []
+    _add_alias('/', 'home', 'main.home')
+    _add_alias('/tracker', 'tracker', 'main.tracker')
+    _add_alias('/mood', 'mood', 'main.mood', methods=['GET', 'POST'])
+    _add_alias('/habit', 'habit', 'main.habit', methods=['GET', 'POST'])
+    _add_alias('/todo', 'todo', 'main.todo', methods=['GET', 'POST'])
+    _add_alias('/tips', 'tips', 'main.tips')
+    _add_alias('/tip/<int:tip_id>', 'tip', 'main.tip_detail')
+    _add_alias('/signup', 'signup', 'main.signup', methods=['GET', 'POST'])
+    _add_alias('/login', 'login', 'main.login', methods=['GET', 'POST'])
 
-@app.route('/mood', methods=['GET', 'POST'])
-def mood():
-    form = MoodForm()
-    if form.validate_on_submit():
-        moods_list.append({
-            "mood": form.mood.data,
-            "notes": form.notes.data,
-            "date": datetime.now().strftime("%Y-%m-%d %H:%M")
-        })
-        return redirect(url_for('mood'))
-    return render_template('mood.html', form=form, moods=moods_list)
-
-habits_list = []
-
-@app.route('/habit', methods=['GET', 'POST'])
-def habit():
-    form = HabitTrackerForm()
-    if form.validate_on_submit():
-        habits_list.append({
-            "habit": form.habit.data,
-            "frequency": form.frequency.data,
-            "done": False
-        })
-        return redirect(url_for('habit'))
-    return render_template('habit.html', form=form, habits=habits_list)
-
-todos_list = []
-
-@app.route('/todo', methods=['GET', 'POST'])
-def todo():
-    form = ToDoForm()
-    if form.validate_on_submit():
-        todos_list.append({
-            "task": form.task.data,
-            "detail": form.detail.data,
-            "done": False
-        })
-        return redirect(url_for('todo'))
-    return render_template('todo.html', form=form, todos=todos_list)
-
-@app.route('/tips')
-def tips():
-    return render_template("tips.html", tips=tips_list)
-
-@app.route('/tip/<int:tip_id>')
-def tip_detail(tip_id):
-    tip = tips_list[tip_id]
-    return render_template("tip.html", tip=tip)
-
-@app.route('/signup')
-def signup():
-    return render_template('signup.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        for user in users:
-            if user['email'] == email and user['password'] == password:
-                return redirect(url_for('home'))
-        error = 'Invalid email or password. Please try again.'
-    return render_template('login.html', error=error)
-
+    # create DB tables (unchanged)
+    db.create_all()
 
 if __name__ == "__main__":
     app.run(debug=True, port=4000)

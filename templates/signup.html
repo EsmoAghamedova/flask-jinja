@@ -1,37 +1,39 @@
-{% extends 'base.html' %} {% block title %}
-  CalmSpace - Home
-{% endblock %}
-{% block content %}
-  {% block css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/signup.css') }}" />
-  {% endblock %}
+{% extends 'base.html' %}
+{% block title %}CalmSpace - Sign Up{% endblock %}
 
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/signup.css') }}" />
+{% endblock %}
+
+{% block content %}
   <section class="signup-section d-flex justify-content-center align-items-center">
     <div class="glass-card signup-card p-5">
       <h2 class="text-center mb-4">Create Account</h2>
 
-      <form>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
         <div class="mb-3">
-          <label for="username" class="form-label">Username</label>
-          <input type="text" class="form-control" id="username" placeholder="Your username" />
+          {{ form.username.label(class="form-label") }}
+          {{ form.username(class="form-control", placeholder="Your username") }}
         </div>
 
         <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" class="form-control" id="email" placeholder="example@email.com" />
+          {{ form.email.label(class="form-label") }}
+          {{ form.email(class="form-control", placeholder="example@email.com") }}
         </div>
 
         <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="Enter password" />
+          {{ form.password.label(class="form-label") }}
+          {{ form.password(class="form-control", placeholder="Enter password") }}
         </div>
 
-        <button type="submit" class="start-btn w-100 mt-3">Sign Up</button>
+        {{ form.submit(class="start-btn w-100 mt-3") }}
       </form>
 
       <p class="text-center mt-3">
         Already have an account?
-        <a href="/login" class="text-decoration-none">Log In</a>
+        <a href="{{ url_for('main.login') }}" class="text-decoration-none">Log In</a>
       </p>
     </div>
   </section>

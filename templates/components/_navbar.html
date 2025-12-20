@@ -1,17 +1,40 @@
-<header>
-  <div class="logo">
-    <img src="../static/img/leaf.png" alt="logo" width="45" height="45" />
-    <h1>CalmSpace</h1>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('main.home') }}">CalmSpace</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"><span class="navbar-toggler-icon"></span></button>
+
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
+        {% with messages=get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <li class="nav-item">
+                <div class="alert alert-{{ category }} mb-0" role="alert">{{ message }}</div>
+              </li>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('main.tips') }}">Tips</a>
+        </li>
+
+        {% if session.get('user_id') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.tracker') }}">Tracker</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.signup') }}">Sign Up</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
   </div>
-
-  <nav class="nav-links">
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('tracker') }}">Tracker</a>
-    <a href="{{ url_for('tips') }}">Tips</a>
-  </nav>
-
-  <nav class="auth-buttons">
-    <a href="{{ url_for('signup') }}" class="signup-btn">Sign Up</a>
-    <a href="{{ url_for('login') }}" class="login-btn">Log In</a>
-  </nav>
-</header>
+</nav>

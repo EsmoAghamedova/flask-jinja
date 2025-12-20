@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-  {{ tip.title }}
+  CalmSpace - Tips
 {% endblock %}
 
 {% block css %}
@@ -8,11 +8,22 @@
 {% endblock %}
 
 {% block content %}
+  <section class="hero container text-center">
+    <h2>Daily Wellness Tips 🌿</h2>
+    <p>Explore simple, effective tips to boost your mood, focus, and overall wellbeing.</p>
+  </section>
+
   <section class="container mt-5">
-    <div class="glass-card p-5 text-center">
-      <h2>{{ tip.title }}</h2>
-      <p class="mt-3">{{ tip.text }}</p>
-      <a href="{{ url_for('tips') }}" class="btn start-btn mt-3">Back to Tips</a>
+    <div class="row g-4 cards-row">
+      {% for t in tips %}
+        <div class="col-md-4 d-flex">
+          <div class="card glass-card text-center p-4 flex-fill card-eq">
+            <h3>{{ t.title }}</h3>
+            <p>{{ t.text }}</p>
+            <a href="{{ url_for('main.tip_detail', tip_id=loop.index0) }}" class="btn start-btn mt-3">Read More</a>
+          </div>
+        </div>
+      {% endfor %}
     </div>
   </section>
 {% endblock %}

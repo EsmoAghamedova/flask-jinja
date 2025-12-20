@@ -20,7 +20,7 @@
           <div class="card glass-card text-center p-4 flex-fill card-eq">
             <h3>{{ t.title }}</h3>
             <p>{{ t.text }}</p>
-            <a href="{{ url_for('tip_detail', tip_id=loop.index0) }}" class="btn start-btn mt-3">Read More</a>
+            <a href="{{ url_for('main.tip_detail', tip_id=loop.index0) }}" class="btn start-btn mt-3">Read More</a>
           </div>
         </div>
       {% endfor %}

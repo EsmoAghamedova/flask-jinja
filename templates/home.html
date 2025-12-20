@@ -1,56 +1,44 @@
-{% extends 'base.html' %} {% block title %}
-  CalmSpace - Home
+{% extends 'base.html' %}
+{% block title %}CalmSpace - Home{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tracker.css') }}" />
 {% endblock %}
+
 {% block content %}
-  {% block css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/home.css') }}" />
-  {% endblock %}
-  <div id="calmCarousel" class="carousel slide mt-4 container" data-bs-ride="carousel">
-    <div class="carousel-inner rounded-4 shadow-sm">
-      <div class="carousel-item active">
-        <img src="../static/img/bg-1.jpg" class="d-block w-100 carousel-img" alt="..." />
-      </div>
-
-      <div class="carousel-item">
-        <img src="../static/img/bg-2.jpg" class="d-block w-100 carousel-img" alt="..." />
-      </div>
-
-      <div class="carousel-item">
-        <img src="../static/img/bg-3.jpg" class="d-block w-100 carousel-img" alt="..." />
-      </div>
-    </div>
-
-    <button class="carousel-control-prev" type="button" data-bs-target="#calmCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
-
-    <button class="carousel-control-next" type="button" data-bs-target="#calmCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
-  </div>
-
   <section class="hero container text-center">
-    <h2>Find Your Calm, Every Day 🌿</h2>
-    <p>Track your mood, organize your goals, and build healthier habits in a peaceful, clean environment.</p>
-    <a href="/tracker" class="start-btn">Start Tracking</a>
+    <h2>Track Your Mood & Goals 🌿</h2>
+    <p>Keep track of your daily mood, goals, and habits in one clean, peaceful space.</p>
+    {% if session.get('user_id') %}
+      <a href="{{ url_for('main.tracker') }}" class="start-btn">Start Tracking</a>
+    {% else %}
+      <a href="{{ url_for('main.login') }}" class="start-btn">Start Tracking</a>
+    {% endif %}
   </section>
 
-  <section class="container mt-5">
+  <section class="container mt-5" id="tracker-cards">
     <div class="row g-4 cards-row">
       <div class="col-md-4 d-flex">
         <div class="card glass-card text-center p-4 flex-fill card-eq">
           <h3>🌞 Mood Tracker</h3>
-          <p>Record your mood and understand your emotional patterns.</p>
+          <p>Log your daily mood and notice patterns over time.</p>
+          <a href="{{ url_for('main.mood') if session.get('user_id') else url_for('main.login') }}" class="start-btn mt-2">Log Mood</a>
         </div>
       </div>
 
       <div class="col-md-4 d-flex">
         <div class="card glass-card text-center p-4 flex-fill card-eq">
-          <h3>📝 Daily Goals</h3>
-          <p>Set your top 3 priorities and stay organized.</p>
+          <h3>📝 Daily To Do List</h3>
+          <p>Set your top 3 tasks and mark them as done.</p>
+          <a href="{{ url_for('main.todo') if session.get('user_id') else url_for('main.login') }}" class="start-btn mt-2">Add Task</a>
         </div>
       </div>
 
       <div class="col-md-4 d-flex">
         <div class="card glass-card text-center p-4 flex-fill card-eq">
-          <h3>💡 Wellness Tips</h3>
-          <p>Discover simple methods to relax, focus, and grow.</p>
+          <h3>💡 Habit Tracker</h3>
+          <p>Track your habits and see your progress over time.</p>
+          <a href="{{ url_for('main.habit') if session.get('user_id') else url_for('main.login') }}" class="start-btn mt-2">Track Habit</a>
         </div>
       </div>
     </div>
