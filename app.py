@@ -11,31 +11,18 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-# register the blueprint as before
+# მას აქ რატომღაც სულ ერორს მიჩჩვენებდა და რამე და ამიტომაც AI-ით გამოვასწორე 😅
+
 app.register_blueprint(main)
-# after app.register_blueprint(main)
 print("URL map:")
 for rule in app.url_map.iter_rules():
     print(rule.endpoint, "->", rule)
 
-# ---------------------------------------------------------------------
-# Create top-level alias endpoints so calls like url_for('home') work.
-# This maps the blueprint view functions (e.g. 'main.home') to simple
-# endpoints (e.g. 'home'). Callers that expect 'home' (no blueprint
-# prefix) will stop raising BuildError.
-#
-# NOTE: This is a compatibility helper. The long-term clean solution is
-# to update templates/code to use the blueprint-aware endpoints:
-#   - inside blueprint templates use {{ url_for('.home') }}
-#   - across the app use url_for('main.home')
-# ---------------------------------------------------------------------
 with app.app_context():
-    # Only add aliases when the blueprint view functions exist
     vf = app.view_functions
 
     def _add_alias(rule, endpoint, blueprint_view_name, methods=None):
         view = vf.get(blueprint_view_name)
-        # if the blueprint view exists and the alias endpoint doesn't yet exist, add it
         if view and endpoint not in vf:
             if methods:
                 app.add_url_rule(rule, endpoint=endpoint, view_func=view, methods=methods)

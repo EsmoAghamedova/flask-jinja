@@ -24,9 +24,6 @@ from models import Mood, ToDo, Habit, User, HabitEntry
 
 main = Blueprint("main", __name__)
 
-# -----------------------
-# Static data
-# -----------------------
 TIPS_LIST = [
     {"title": "🧘‍♀️ Meditation", "text": "Spend 5–10 minutes focusing on your breath."},
     {"title": "🌿 Nature Walks", "text": "Take a walk outside to clear your mind."},
@@ -36,10 +33,7 @@ TIPS_LIST = [
     {"title": "🎵 Music Breaks", "text": "Listen to calming music to recharge."},
 ]
 
-
-# -----------------------
-# Helpers / auth
-# -----------------------
+# მას ესეც AI-ით დავამატე (ამ კოდის აზრზე თან ვარ თან არა... იმისთვისაა, რომ რეგისტრაციის მერე უნდა გამოჩნდეს გვერდი და რამე მაგრამ კოდს დიდად ვერ გავუგე 😅)
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -53,16 +47,8 @@ def login_required(f):
 
 @main.context_processor
 def inject_auth_forms():
-    """
-    Provide signup/login forms to all templates to avoid collisions with page-specific
-    form variable names (mood_form, todo_form, habit_form).
-    """
     return dict(signup_form=SignupForm(), login_form=LoginForm())
 
-
-# -----------------------
-# Static/simple pages
-# -----------------------
 @main.route("/")
 def home():
     user = None
@@ -73,7 +59,6 @@ def home():
 
 @main.route("/tips")
 def tips():
-    # Endpoint name will be 'main.tips' because blueprint is 'main' and function is 'tips'
     return render_template("tips.html", tips=TIPS_LIST)
 
 
@@ -83,19 +68,11 @@ def tip_detail(tip_id):
         abort(404)
     return render_template("tip.html", tip=TIPS_LIST[tip_id])
 
-
-# -----------------------
-# Tracker dashboard
-# -----------------------
 @main.route("/tracker")
-@login_required
+@login_required  # ის ზემოთ რაც აი-თ დავამტე აქ გამოვიყენე და კიდევ სხვა როუტებზეც
 def tracker():
     return render_template("tracker.html")
 
-
-# -----------------------
-# Mood CRUD
-# -----------------------
 @main.route("/mood", methods=["GET", "POST"])
 @login_required
 def mood():
@@ -154,10 +131,6 @@ def mood_delete(mood_id):
     flash("Mood deleted.", "info")
     return redirect(url_for("main.mood"))
 
-
-# -----------------------
-# Habit CRUD + per-day completion
-# -----------------------
 @main.route("/habit", methods=["GET", "POST"])
 @login_required
 def habit():
@@ -249,9 +222,6 @@ def habit_delete(habit_id):
     return redirect(url_for("main.habit"))
 
 
-# -----------------------
-# ToDo CRUD
-# -----------------------
 @main.route("/todo", methods=["GET", "POST"])
 @login_required
 def todo():
@@ -312,10 +282,6 @@ def todo_delete(todo_id):
     flash("Task deleted.", "info")
     return redirect(url_for("main.todo"))
 
-
-# -----------------------
-# Auth: signup / login / logout
-# -----------------------
 @main.route("/signup", methods=["GET", "POST"])
 def signup():
     form = SignupForm()
@@ -366,9 +332,6 @@ def logout():
     return redirect(url_for("main.home"))
 
 
-# -----------------------
-# Progress charts
-# -----------------------
 @main.route("/progress")
 @login_required
 def progress():
@@ -381,7 +344,6 @@ def progress():
     todos_done_count = OrderedDict((label, 0) for label in labels)
     habits_done_count = OrderedDict((label, 0) for label in labels)
 
-    # Moods per day
     moods = Mood.query.filter(
         Mood.user_id == session["user_id"],
         Mood.created_at >= datetime.combine(start_date, datetime.min.time()),
@@ -391,7 +353,6 @@ def progress():
         if key in moods_count:
             moods_count[key] += 1
 
-    # Todos completed per day (by created_at)
     todos = ToDo.query.filter(
         ToDo.user_id == session["user_id"],
         ToDo.done.is_(True),
@@ -402,7 +363,6 @@ def progress():
         if key in todos_done_count:
             todos_done_count[key] += 1
 
-    # Habit completions per day
     habit_entries = HabitEntry.query.join(Habit).filter(
         Habit.user_id == session["user_id"],
         HabitEntry.date >= start_date,
@@ -420,3 +380,6 @@ def progress():
         habits_data=list(habits_done_count.values()),
         days=DAYS,
     )
+    
+# მას კოდში აი-თ მაქვს რაღაცეები ჩამატებული, რადგან ზოგი რაღაც არ ვიცოდი როგორ უნდა გამეკეთა და ამიტომაც როგორიც მიინდოდა გამომსვლოდა გამოვიყენე :)
+# ანუ ლოგიკის უმეტესი ნაწილი ჩემი მას მაგრამ ამინც არის 50/50 აი-თ გაკეთებული....ნეტა მეც ამდენი კოდის წერა ჩემით შემეძლოს 🥲

@@ -48,15 +48,10 @@ class Habit(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    # relationship to per-day completion entries
     entries = db.relationship('HabitEntry', backref='habit', lazy=True, cascade="all, delete-orphan")
 
 
 class HabitEntry(db.Model):
-    """
-    Represents a habit completion for a specific habit on a specific day.
-    A unique constraint on (habit_id, date) prevents duplicate marks for the same day.
-    """
     __tablename__ = 'habit_entries'
     id = db.Column(db.Integer, primary_key=True)
     habit_id = db.Column(db.Integer, db.ForeignKey('habits.id'), nullable=False)
