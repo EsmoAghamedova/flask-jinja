@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from sqlalchemy import inspect, text
 
 from extensions import db
 from models import Tip, User
@@ -20,6 +21,24 @@ app.register_blueprint(main)
 print("URL map:")
 for rule in app.url_map.iter_rules():
     print(rule.endpoint, "->", rule)
+
+
+def ensure_schema():
+    """Lightweight, SQLite-friendly migration to add new columns if they are missing."""
+    inspector = inspect(db.engine)
+    user_columns = {col["name"] for col in inspector.get_columns("users")} if inspector.has_table("users") else set()
+
+    # Add missing columns for admin support and timestamps on users
+    if "is_admin" not in user_columns:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0"))
+    if "created_at" not in user_columns:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN created_at DATETIME"))
+
+    # Create tips table if a previous DB exists without it
+    if not inspector.has_table("tips"):
+        Tip.__table__.create(db.engine)
+
+    db.session.commit()
 
 
 def ensure_seed_data():
@@ -64,8 +83,9 @@ with app.app_context():
     _add_alias('/signup', 'signup', 'main.signup', methods=['GET', 'POST'])
     _add_alias('/login', 'login', 'main.login', methods=['GET', 'POST'])
 
-    # create DB tables (unchanged)
+    # create DB tables and backfill schema updates
     db.create_all()
+    ensure_schema()
     ensure_seed_data()
 
 if __name__ == "__main__":
