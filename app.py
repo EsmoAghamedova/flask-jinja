@@ -43,14 +43,31 @@ def ensure_schema():
 
 def ensure_seed_data():
     """Create an admin user and starter tips for convenience in dev/demo."""
-    admin_email = os.getenv("ADMIN_EMAIL", "admin@calmspace.test")
-    admin_password = os.getenv("ADMIN_PASSWORD", "admin1234")
-    admin_user = User.query.filter_by(email=admin_email).first()
-    if not admin_user:
-        admin_user = User(username="admin", email=admin_email, is_admin=True)
-        admin_user.set_password(admin_password)
-        db.session.add(admin_user)
-        db.session.commit()
+    # Default/admin emails and passwords (can be overridden via env vars)
+    admins_to_seed = [
+        {
+            "username": "admin",
+            "email": os.getenv("ADMIN_EMAIL", "admin@calmspace.test"),
+            "password": os.getenv("ADMIN_PASSWORD", "admin1234"),
+        },
+        {
+            "username": "esmira",
+            "email": "esmira.agamedovate03@geolab.edu.ge",
+            "password": "EsmoAdmin2009<3",
+        },
+    ]
+
+    for admin in admins_to_seed:
+        admin_user = User.query.filter_by(email=admin["email"]).first()
+        if not admin_user:
+            admin_user = User(
+                username=admin["username"],
+                email=admin["email"],
+                is_admin=True,
+            )
+            admin_user.set_password(admin["password"])
+            db.session.add(admin_user)
+            db.session.commit()
 
     if Tip.query.count() == 0:
         starter_tips = [
