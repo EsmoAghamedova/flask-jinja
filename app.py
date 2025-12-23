@@ -1,7 +1,10 @@
-from flask import Flask
-from extensions import db
-from routes import main
 import os
+
+from flask import Flask
+
+from extensions import db
+from models import Tip, User
+from routes import main
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '1234567890'
@@ -17,6 +20,28 @@ app.register_blueprint(main)
 print("URL map:")
 for rule in app.url_map.iter_rules():
     print(rule.endpoint, "->", rule)
+
+
+def ensure_seed_data():
+    """Create an admin user and starter tips for convenience in dev/demo."""
+    admin_email = os.getenv("ADMIN_EMAIL", "admin@calmspace.test")
+    admin_password = os.getenv("ADMIN_PASSWORD", "admin1234")
+    admin_user = User.query.filter_by(email=admin_email).first()
+    if not admin_user:
+        admin_user = User(username="admin", email=admin_email, is_admin=True)
+        admin_user.set_password(admin_password)
+        db.session.add(admin_user)
+        db.session.commit()
+
+    if Tip.query.count() == 0:
+        starter_tips = [
+            Tip(title="🧘‍♀️ Meditation", body="Spend 5–10 minutes focusing on your breath.", category="Mindfulness", author=admin_user),
+            Tip(title="💧 Hydration", body="Drink a glass of water as soon as you wake up.", category="Energy", author=admin_user),
+            Tip(title="📓 Journaling", body="Write down one win and one lesson from today.", category="Reflection", author=admin_user),
+        ]
+        db.session.bulk_save_objects(starter_tips)
+        db.session.commit()
+
 
 with app.app_context():
     vf = app.view_functions
@@ -41,6 +66,7 @@ with app.app_context():
 
     # create DB tables (unchanged)
     db.create_all()
+    ensure_seed_data()
 
 if __name__ == "__main__":
     app.run(debug=True, port=4000)

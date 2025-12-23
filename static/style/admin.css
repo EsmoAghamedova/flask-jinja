@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  background-color: #f5f9fb;
+  color: #00332d;
+}
+
+.glass-card {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 77, 64, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.start-btn {
+  background: #004d40;
+  color: #fff;
+  border-radius: 30px;
+  padding: 10px 18px;
+  text-decoration: none;
+  border: none;
+}
+
+.start-btn:hover {
+  background: #003c32;
+  color: #fff;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.85rem 0.5rem;
+}

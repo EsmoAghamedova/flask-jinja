@@ -15,29 +15,61 @@
     </div>
 
     <div class="row g-4">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="card glass-card p-4">
-          <h4>Mood</h4>
-          <p>Log and review your mood entries.</p>
-          <a href="{{ url_for('main.mood') }}" class="start-btn mt-2">Open Mood Tracker</a>
+          <h4>🧠 Moods</h4>
+          <p class="lead mb-1">{{ summary.moods }}</p>
+          <p class="text-muted mb-3 small">entries logged</p>
+          <a href="{{ url_for('main.mood') }}" class="start-btn mt-auto">Open Mood Tracker</a>
         </div>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="card glass-card p-4">
-          <h4>To-Do</h4>
-          <p>Manage tasks and mark them done.</p>
-          <a href="{{ url_for('main.todo') }}" class="start-btn mt-2">Open To-Do</a>
+          <h4>✅ To-Do</h4>
+          <p class="lead mb-1">{{ summary.todos_done }} / {{ summary.todos }}</p>
+          <p class="text-muted mb-3 small">tasks completed</p>
+          <a href="{{ url_for('main.todo') }}" class="start-btn mt-auto">Open To-Do</a>
         </div>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="card glass-card p-4">
-          <h4>Habits</h4>
-          <p>Track habits and edit them over time.</p>
-          <a href="{{ url_for('main.habit') }}" class="start-btn mt-2">Open Habit Tracker</a>
+          <h4>🔥 Habits</h4>
+          <p class="lead mb-1">{{ summary.habits }}</p>
+          <p class="text-muted mb-3 small">active habits</p>
+          <a href="{{ url_for('main.habit') }}" class="start-btn mt-auto">Open Habit Tracker</a>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card glass-card p-4">
+          <h4>🏅 Badges</h4>
+          <p class="lead mb-1">{{ badges|length }}</p>
+          <p class="text-muted mb-3 small">earned</p>
+          <a href="{{ url_for('main.tips') }}" class="start-btn mt-auto">Get inspired</a>
         </div>
       </div>
     </div>
+
+    {% if badges %}
+      <div class="glass-card p-4 mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Your badges</h5>
+          <small class="text-muted">Keep the streak alive!</small>
+        </div>
+        <div class="d-flex gap-3 flex-wrap">
+          {% for badge in badges %}
+            <div class="badge-card">
+              <span class="emoji">{{ badge.emoji }}</span>
+              <div>
+                <strong>{{ badge.name }}</strong>
+                <p class="mb-0 text-muted small">{{ badge.desc }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
   </section>
 {% endblock %}
