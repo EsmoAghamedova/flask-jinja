@@ -31,7 +31,7 @@
               <tr>
                 <td>{{ tip.title }}</td>
                 <td>{{ tip.category or '—' }}</td>
-                <td>{{ tip.updated_at.strftime('%b %d, %Y') }}</td>
+                <td>{{ tip.updated_at.strftime('%b %d, %Y') if tip.updated_at else '—' }}</td>
                 <td class="text-end">
                   <a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.admin_tip_edit', tip_id=tip.id) }}">Edit</a>
                   <form action="{{ url_for('main.admin_tip_delete', tip_id=tip.id) }}" method="post" class="d-inline">

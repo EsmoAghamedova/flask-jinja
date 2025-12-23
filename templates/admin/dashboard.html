@@ -70,7 +70,7 @@
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td>{% if user.is_admin %}✅{% else %}—{% endif %}</td>
-                <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                <td>{{ user.created_at.strftime('%b %d, %Y') if user.created_at else '—' }}</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -92,7 +92,7 @@
                 {% if tip.category %}
                   <span class="badge bg-success ms-2">{{ tip.category }}</span>
                 {% endif %}
-                <p class="mb-0 text-muted small">Updated {{ tip.updated_at.strftime('%b %d, %Y') }}</p>
+                <p class="mb-0 text-muted small">Updated {{ tip.updated_at.strftime('%b %d, %Y') if tip.updated_at else '—' }}</p>
               </div>
               <a href="{{ url_for('main.tip_detail', tip_id=tip.id) }}" class="btn btn-sm btn-outline-primary">View</a>
             </li>
