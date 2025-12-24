@@ -53,20 +53,56 @@ def get_current_user():
     return user
 
 
-def calculate_badges(user_id):
+def get_user_stats(user_id):
     mood_count = Mood.query.filter_by(user_id=user_id).count()
     todo_done_count = ToDo.query.filter_by(user_id=user_id, done=True).count()
     habit_entries = HabitEntry.query.join(Habit).filter(Habit.user_id == user_id).count()
+    return {
+        "mood_count": mood_count,
+        "todo_done_count": todo_done_count,
+        "habit_entries": habit_entries,
+    }
 
+
+def get_badge_definitions():
+    return [
+        {
+            "id": "mood_explorer",
+            "name": "Mood Explorer",
+            "desc": "Logged moods 5+ times",
+            "emoji": "🧭",
+            "check": lambda stats: stats["mood_count"] >= 5,
+        },
+        {
+            "id": "task_slayer",
+            "name": "Task Slayer",
+            "desc": "Completed 10 tasks",
+            "emoji": "✅",
+            "check": lambda stats: stats["todo_done_count"] >= 10,
+        },
+        {
+            "id": "habit_streak",
+            "name": "Habit Streak",
+            "desc": "Marked habits 7 times",
+            "emoji": "🔥",
+            "check": lambda stats: stats["habit_entries"] >= 7,
+        },
+        {
+            "id": "consistency_pro",
+            "name": "Consistency Pro",
+            "desc": "Kept a strong routine",
+            "emoji": "🏅",
+            "check": lambda stats: stats["mood_count"] >= 20 and stats["todo_done_count"] >= 20,
+        },
+    ]
+
+
+def calculate_badges(user_id):
+    stats = get_user_stats(user_id)
     badges = []
-    if mood_count >= 5:
-        badges.append({"name": "Mood Explorer", "desc": "Logged moods 5+ times", "emoji": "🧭"})
-    if todo_done_count >= 10:
-        badges.append({"name": "Task Slayer", "desc": "Completed 10 tasks", "emoji": "✅"})
-    if habit_entries >= 7:
-        badges.append({"name": "Habit Streak", "desc": "Marked habits 7 times", "emoji": "🔥"})
-    if mood_count >= 20 and todo_done_count >= 20:
-        badges.append({"name": "Consistency Pro", "desc": "Kept a strong routine", "emoji": "🏅"})
+    for badge in get_badge_definitions():
+        if badge["check"](stats):
+            badges.append({k: v for k, v in badge.items() if k != "check"})
     return badges
 
 
@@ -128,6 +164,28 @@ def tracker():
         },
         badges=badges,
     )
+
+
+@main.route("/badges")
+@login_required
+def badges():
+    user = get_current_user()
+    if user.is_admin:
+        return redirect(url_for("main.admin_dashboard"))
+    stats = get_user_stats(user.id)
+    all_badges = []
+    for badge in get_badge_definitions():
+        unlocked = badge["check"](stats)
+        all_badges.append(
+            {
+                "id": badge["id"],
+                "name": badge["name"],
+                "desc": badge["desc"],
+                "emoji": badge["emoji"],
+                "unlocked": unlocked,
+            }
+        )
+    return render_template("badges.html", badges=all_badges, stats=stats)
 
 @main.route("/mood", methods=["GET", "POST"])
 @login_required

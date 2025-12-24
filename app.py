@@ -97,6 +97,7 @@ with app.app_context():
     _add_alias('/todo', 'todo', 'main.todo', methods=['GET', 'POST'])
     _add_alias('/tips', 'tips', 'main.tips')
     _add_alias('/tip/<int:tip_id>', 'tip', 'main.tip_detail')
+    _add_alias('/badges', 'badges', 'main.badges')
     _add_alias('/signup', 'signup', 'main.signup', methods=['GET', 'POST'])
     _add_alias('/login', 'login', 'main.login', methods=['GET', 'POST'])
 
