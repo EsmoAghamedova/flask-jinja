@@ -1,5 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField, PasswordField, BooleanField, SelectField
+from wtforms import (
+    BooleanField,
+    PasswordField,
+    SelectField,
+    StringField,
+    SubmitField,
+    TextAreaField,
+)
 from wtforms.validators import DataRequired, Email, Length
 
 MOOD_CHOICES = [
@@ -44,3 +51,15 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log in')
+
+
+class TipForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired(), Length(max=150)])
+    body = TextAreaField('Content', validators=[DataRequired()])
+    category = StringField('Category', validators=[Length(max=80)])
+    submit = SubmitField('Save')
+
+
+class AdminUserForm(FlaskForm):
+    is_admin = BooleanField('Admin privileges')
+    submit = SubmitField('Update role')

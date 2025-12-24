@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  background-color: #e0f7fa;
+  color: #004d40;
+}
+
+.badges-header h2 {
+  font-weight: 700;
+}
+
+.stats-pill {
+  display: inline-flex;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 77, 64, 0.15);
+  font-weight: 600;
+  color: #004d40;
+}
+
+.badge-card {
+  display: flex;
+  gap: 18px;
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 77, 64, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.badge-card:hover {
+  transform: translateY(-4px);
+}
+
+.badge-card.locked {
+  opacity: 0.65;
+  filter: grayscale(0.2);
+}
+
+.badge-icon {
+  font-size: 2.2rem;
+}
+
+.badge-info h5 {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.badge-status {
+  display: inline-flex;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-status.unlocked {
+  background: #d9f7e6;
+  color: #006d3d;
+}
+
+.badge-status.locked {
+  background: #f2f2f2;
+  color: #6b6b6b;
+}
+
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.confetti-container.active {
+  opacity: 1;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10vh;
+  width: 10px;
+  height: 16px;
+  opacity: 0.9;
+  animation: confetti-fall 3s linear forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+footer {
+  background: #1f1f1f;
+  color: #eee;
+  padding: 40px 0;
+  margin-top: 50px;
+}
+
+.footer-container {
+  width: 90%;
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.footer-container h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links ul li {
+  margin-bottom: 6px;
+}
+
+.footer-links ul li a {
+  color: #eee;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.footer-links ul li a:hover {
+  color: #00c8ff;
+}
+
+.footer-copy {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  opacity: 0.8;
+}

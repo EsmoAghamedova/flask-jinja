@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/admin.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <p class="text-muted mb-1 small">Control center</p>
+        <h2 class="mb-0">Admin dashboard</h2>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" href="{{ url_for('main.admin_users') }}">Manage users</a>
+        <a class="btn start-btn" href="{{ url_for('main.admin_tips') }}">Manage tips</a>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-md-3">
+        <div class="card glass-card p-3">
+          <p class="text-muted small mb-1">Users</p>
+          <h3>{{ stats.users }}</h3>
+          <p class="text-muted small mb-0">Total registered</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card glass-card p-3">
+          <p class="text-muted small mb-1">Moods</p>
+          <h3>{{ stats.moods }}</h3>
+          <p class="text-muted small mb-0">Logged entries</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card glass-card p-3">
+          <p class="text-muted small mb-1">Tasks</p>
+          <h3>{{ stats.tasks }}</h3>
+          <p class="text-muted small mb-0">To-dos created</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card glass-card p-3">
+          <p class="text-muted small mb-1">Habits</p>
+          <h3>{{ stats.habits }}</h3>
+          <p class="text-muted small mb-0">Active habits</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Latest users</h5>
+        <a href="{{ url_for('main.admin_users') }}" class="small">View all</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Admin</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in recent_users %}
+              <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{% if user.is_admin %}✅{% else %}—{% endif %}</td>
+                <td>{{ user.created_at.strftime('%b %d, %Y') if user.created_at else '—' }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="glass-card p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Latest tips</h5>
+        <a href="{{ url_for('main.admin_tips') }}" class="small">View all</a>
+      </div>
+      {% if recent_tips %}
+        <ul class="list-group list-group-flush">
+          {% for tip in recent_tips %}
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div>
+                <strong>{{ tip.title }}</strong>
+                {% if tip.category %}
+                  <span class="badge bg-success ms-2">{{ tip.category }}</span>
+                {% endif %}
+                <p class="mb-0 text-muted small">Updated {{ tip.updated_at.strftime('%b %d, %Y') if tip.updated_at else '—' }}</p>
+              </div>
+              <a href="{{ url_for('main.tip_detail', tip_id=tip.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted mb-0">No tips yet.</p>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

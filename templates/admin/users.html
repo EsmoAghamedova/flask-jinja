@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/admin.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <p class="text-muted mb-1 small">People</p>
+        <h2 class="mb-0">Users</h2>
+      </div>
+      <a class="btn btn-outline-secondary" href="{{ url_for('main.admin_dashboard') }}">Back to dashboard</a>
+    </div>
+
+    <div class="table-responsive glass-card p-3">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Admin</th>
+            <th>Joined</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+            <tr>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ 'Yes' if user.is_admin else 'No' }}</td>
+              <td>{{ user.created_at.strftime('%b %d, %Y') if user.created_at else '—' }}</td>
+              <td class="text-end">
+                <form method="post" action="{{ url_for('main.admin_user_role', user_id=user.id) }}" class="d-inline">
+                  {{ forms[user.id].hidden_tag() }}
+                  {{ forms[user.id].is_admin(class="form-check-input") }}
+                  <label class="form-check-label me-2">Admin</label>
+                  <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}
