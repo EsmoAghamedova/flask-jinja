@@ -1,48 +1,72 @@
-# CalmSpace 🌿✨
 
-A calm, friendly productivity and wellness tracker built with Flask + Jinja. Track moods, habits, and to-dos, discover tips, and celebrate progress with motivational badges.
+# CalmSpace 🌿
+*A calm productivity & wellness tracker built with Flask*
 
----
+![Flask](https://img.shields.io/badge/Flask-Backend-black)
+![SQLite](https://img.shields.io/badge/SQLite-Database-blue)
+![Status](https://img.shields.io/badge/Status-Active-success)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-## 📊 Project Stats (live from the app)
-- 👥 **Users**: _tracked in DB_
-- 😊 **Moods logged**: _tracked in DB_
-- ✅ **Tasks completed**: _tracked in DB_
-- 🔥 **Habit check-ins**: _tracked in DB_
-- 💡 **Tips**: _managed by admin_
-
-> These stats are shown in the **Admin Dashboard** once the app is running.
+CalmSpace is a cozy, minimal web app focused on mental wellness and productivity.  
+Track moods, habits, and tasks, earn badges, and explore wellness tips — all in one calm space.
 
 ---
 
 ## ✨ Features
-- 🧠 **Mood Tracker** — log moods with notes
-- ✅ **To-Do List** — add, edit, complete tasks
-- 🔁 **Habit Tracker** — build daily routines
-- 💡 **Tips Library** — admin-managed tips in DB
-- 🏅 **Badges** — unlock motivational achievements + confetti
-- ❄️ **Snowflakes** — ambient site-wide effect
-- 🛡️ **Admin Panel** — stats dashboard + user roles + tip CRUD
+- 🧠 Mood tracking with notes
+- ✅ To-do list with completion state
+- 🔁 Habit tracker with checklists
+- 💡 Tips system stored in database
+- 🏅 Achievement badges & progress rewards
+- 📊 Admin statistics dashboard
+- 🛡️ Admin controls (ban/delete users, manage tips)
+- 🔐 Secure authentication (hashed passwords + Flask-Login)
 
 ---
 
-## 🚀 Quick Start
+## 📊 App Statistics (Admin)
+Admins can view:
+- 👥 Total registered users
+- 😊 Total moods logged
+- ✅ Completed tasks count
+- 🔥 Habit check-ins
+- 💡 Total tips in database
+
+Stats are calculated live from the database.
+
+---
+
+## 🏅 Badges System
+Users can unlock badges such as:
+- 🌱 First Mood Logged
+- ✅ First Task Completed
+- 🔥 7-Day Habit Streak
+- 🧠 Consistency Master
+
+Badges are awarded automatically based on activity.
+
+---
+
+## 🚀 Getting Started
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 python app.py
 ```
-Open: http://127.0.0.1:4000
+
+Open in browser:
+http://127.0.0.1:4000
 
 ---
 
 ## 🔐 Admin Access
-The app seeds an admin user on first run:
-- **Email**: `admin@calmspace.test`
-- **Password**: `admin1234`
+An admin account is created on first run:
 
-You can also configure via env:
+- Email: admin@calmspace.test
+- Password: admin1234
+
+You can override via environment variables:
 ```bash
 export ADMIN_EMAIL="you@example.com"
 export ADMIN_PASSWORD="supersecret"
@@ -50,38 +74,31 @@ export ADMIN_PASSWORD="supersecret"
 
 ---
 
-## 🧭 Main Pages
+## 🧭 Pages
 - `/` — Home
-- `/tracker` — Tracker dashboard (user)
-- `/badges` — Badges & unlocks (user)
-- `/tips` — Public tips list (user)
+- `/tracker` — Mood / Habit / To-do
+- `/tips` — Tips library
+- `/badges` — User achievements
 - `/admin` — Admin dashboard
 
 ---
 
 ## 🗂️ Project Structure
 ```
-app.py            # app boot + seed + schema helpers
-routes.py         # routes + logic
-models.py         # SQLAlchemy models
-forms.py          # WTForms
-templates/        # Jinja templates
-static/style/     # CSS styles
+app.py          # App setup & seeding
+routes.py       # Blueprints & logic
+models.py       # Database models
+forms.py        # WTForms
+templates/      # Jinja templates
+static/         # CSS & assets
 ```
 
 ---
 
-## 🧪 Testing
-```bash
-python -m compileall .
-```
-
----
-
-## 📸 UI Highlights
+## 🎨 UI Style
+- Calm green color palette
 - Glassmorphism cards
-- Badge celebrations
-- Calm green palette
+- Minimal, distraction-free layout
 
 ---
 
