@@ -103,4 +103,4 @@ static/         # CSS & assets
 ---
 
 ## 📜 License
-MIT
+🪪 Licensed under the MIT License
