@@ -91,12 +91,18 @@ def home():
 
 @main.route("/tips")
 def tips():
+    user = get_current_user()
+    if user and user.is_admin:
+        return redirect(url_for("main.admin_dashboard"))
     all_tips = Tip.query.order_by(Tip.created_at.desc()).all()
     return render_template("tips.html", tips=all_tips)
 
 
 @main.route("/tip/<int:tip_id>")
 def tip_detail(tip_id):
+    user = get_current_user()
+    if user and user.is_admin:
+        return redirect(url_for("main.admin_dashboard"))
     tip = Tip.query.get_or_404(tip_id)
     return render_template("tip.html", tip=tip)
 
@@ -104,6 +110,8 @@ def tip_detail(tip_id):
 @login_required  # ის ზემოთ რაც აი-თ დავამტე აქ გამოვიყენე და კიდევ სხვა როუტებზეც
 def tracker():
     user = get_current_user()
+    if user.is_admin:
+        return redirect(url_for("main.admin_dashboard"))
     mood_count = Mood.query.filter_by(user_id=user.id).count()
     todo_count = ToDo.query.filter_by(user_id=user.id).count()
     todo_done_count = ToDo.query.filter_by(user_id=user.id, done=True).count()
@@ -376,6 +384,8 @@ def login():
                 next_page = request.args.get("next")
                 if next_page and next_page.startswith("/"):
                     return redirect(next_page)
+                if user.is_admin:
+                    return redirect(url_for("main.admin_dashboard"))
                 return redirect(url_for("main.tracker"))
             flash("Invalid email or password", "danger")
         else:

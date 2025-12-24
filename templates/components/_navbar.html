@@ -15,24 +15,27 @@
           {% endif %}
         {% endwith %}
 
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('main.tips') }}">Tips</a>
-        </li>
-
-        {% if session.get('user_id') %}
-          {% if current_user and current_user.is_admin %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.admin_dashboard') }}">Admin</a>
-            </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.tracker') }}">Tracker</a>
-            </li>
-          {% endif %}
+        {% if session.get('user_id') and current_user and current_user.is_admin %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.admin_dashboard') }}">Admin</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+          </li>
+        {% elif session.get('user_id') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.tips') }}">Tips</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.tracker') }}">Tracker</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
           </li>
         {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.tips') }}">Tips</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
           </li>
