@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}CalmSpace - Badges{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/badges.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5 badges-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h2>Your Motivation Badges</h2>
+        <p class="text-muted mb-0">Unlock badges as you log moods, complete tasks, and build habits.</p>
+      </div>
+      <div class="stats-pill">
+        <span>🙂 {{ stats.mood_count }} moods</span>
+        <span>✅ {{ stats.todo_done_count }} tasks</span>
+        <span>🔥 {{ stats.habit_entries }} habits</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="container mt-4">
+    <div class="row g-4">
+      {% for badge in badges %}
+        <div class="col-md-6 col-lg-4">
+          <div class="badge-card {% if not badge.unlocked %}locked{% endif %}">
+            <div class="badge-icon">{{ badge.emoji }}</div>
+            <div class="badge-info">
+              <h5>{{ badge.name }}</h5>
+              <p class="text-muted mb-2">{{ badge.desc }}</p>
+              {% if badge.unlocked %}
+                <span class="badge-status unlocked">Unlocked</span>
+              {% else %}
+                <span class="badge-status locked">Locked</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div id="confetti" class="confetti-container" data-unlocked='{{ badges | selectattr("unlocked") | map(attribute="id") | list | tojson }}'></div>
+
+  <script>
+    const confettiContainer = document.getElementById('confetti');
+    const unlocked = JSON.parse(confettiContainer.dataset.unlocked || '[]');
+    const storageKey = 'calmspace-unlocked-badges';
+    const previous = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    const newlyUnlocked = unlocked.filter((id) => !previous.includes(id));
+
+    if (newlyUnlocked.length > 0) {
+      const pieces = 120;
+      for (let i = 0; i < pieces; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.animationDelay = Math.random() * 0.6 + 's';
+        piece.style.backgroundColor = `hsl(${Math.random() * 360}, 80%, 65%)`;
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confettiContainer.appendChild(piece);
+      }
+      confettiContainer.classList.add('active');
+      setTimeout(() => {
+        confettiContainer.classList.remove('active');
+        confettiContainer.innerHTML = '';
+      }, 3500);
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(unlocked));
+  </script>
+{% endblock %}

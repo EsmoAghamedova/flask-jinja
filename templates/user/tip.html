@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}
+  CalmSpace - Tips
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tips.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="hero container text-center">
+    <h2>{{ tip.title }}</h2>
+    {% if tip.category %}
+      <span class="badge bg-success">{{ tip.category }}</span>
+    {% endif %}
+  </section>
+
+  <section class="container mt-4">
+    <div class="glass-card p-4">
+      <p class="text-muted small mb-2">Updated {{ tip.updated_at.strftime('%b %d, %Y') }}</p>
+      <p>{{ tip.body }}</p>
+      <a href="{{ url_for('main.tips') }}" class="start-btn mt-3">Back to tips</a>
+    </div>
+  </section>
+{% endblock %}

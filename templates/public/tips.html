@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}
+  CalmSpace - Tips
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tips.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="hero container text-center">
+    <h2>Daily Wellness Tips 🌿</h2>
+    <p>Explore simple, effective tips to boost your mood, focus, and overall wellbeing.</p>
+  </section>
+
+  <section class="container mt-5">
+    <div class="row g-4 cards-row">
+      {% for t in tips %}
+        <div class="col-md-4 d-flex">
+          <div class="card glass-card text-center p-4 flex-fill card-eq">
+            <h3>{{ t.title }}</h3>
+            {% if t.category %}
+              <span class="badge bg-success mb-2">{{ t.category }}</span>
+            {% endif %}
+            <p>{{ t.body[:120] ~ ('...' if t.body|length > 120 else '') }}</p>
+            <a href="{{ url_for('main.tip_detail', tip_id=t.id) }}" class="btn start-btn mt-3">Read More</a>
+          </div>
+        </div>
+      {% endfor %}
+      {% if not tips %}
+        <p class="text-center text-muted">No tips yet. Ask an admin to add the first one.</p>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

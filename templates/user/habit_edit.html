@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Edit Habit{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tracker.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5">
+    <div class="glass-card p-5 mx-auto" style="max-width:600px;">
+      <h2 class="mb-4">Edit Habit</h2>
+      <form method="POST">
+        {{ habit_form.hidden_tag() }}
+        <div class="mb-3">{{ habit_form.habit(class="form-control") }}</div>
+        <div class="mb-3">{{ habit_form.frequency(class="form-control") }}</div>
+        {{ habit_form.submit(class="start-btn") }}
+        <a href="{{ url_for('main.habit') }}" class="btn btn-secondary ms-2">Cancel</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}

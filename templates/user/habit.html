@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}CalmSpace - Habits{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tracker.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5">
+    <div class="glass-card p-4 mx-auto" style="max-width:800px;">
+      <h2 class="text-center mb-4">Habits</h2>
+
+      <form method="POST" class="mb-3">
+        {{ habit_form.hidden_tag() }}
+        <div class="row g-2">
+          <div class="col-md-6">{{ habit_form.habit(class="form-control", placeholder="Habit (e.g. Read 20 pages)") }}</div>
+          <div class="col-md-4">{{ habit_form.frequency(class="form-control", placeholder="Daily / Weekly / Monthly") }}</div>
+          <div class="col-md-2">{{ habit_form.submit(class="start-btn w-100") }}</div>
+        </div>
+      </form>
+
+      <ul class="list-group">
+        {% for h in habits %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ h.habit }}</strong> <small class="text-muted">({{ h.frequency }})</small><br>
+              <small class="text-muted">{{ h.created_at.strftime('%Y-%m-%d') }}</small>
+            </div>
+            <div class="d-flex align-items-center">
+              {# tick form: mark/unmark completed for today #}
+              <form method="POST" action="{{ url_for('main.habit_complete', habit_id=h.id) }}" style="display:inline;">
+                {{ habit_form.hidden_tag() }}
+                {% if h.id in completed_today %}
+                  <button type="submit" class="btn btn-sm btn-success me-2">✓ Today</button>
+                {% else %}
+                  <button type="submit" class="btn btn-sm btn-outline-success me-2">Mark Done</button>
+                {% endif %}
+              </form>
+
+              <a href="{{ url_for('main.habit_edit', habit_id=h.id) }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+
+              <form method="POST" action="{{ url_for('main.habit_delete', habit_id=h.id) }}" style="display:inline;">
+                {{ habit_form.hidden_tag() }}
+                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            </div>
+          </li>
+        {% else %}
+          <li class="list-group-item">No habits yet — add one above.</li>
+        {% endfor %}
+      </ul>
+
+    </div>
+  </section>
+{% endblock %}

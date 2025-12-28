@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}CalmSpace - Mood Check{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tracker.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5">
+    <div class="glass-card p-5 mx-auto" style="max-width: 500px;">
+      <h2 class="text-center mb-4">How are you feeling today? 🌿</h2>
+
+      <form method="POST">
+        {{ mood_form.hidden_tag() }}
+
+        <div class="mb-3">
+          {{ mood_form.mood.label(class='form-label') }}
+          {{ mood_form.mood(class='form-control') }}
+        </div>
+
+        <div class="mb-3">
+          {{ mood_form.notes.label(class='form-label') }}
+          {{ mood_form.notes(class='form-control', placeholder='Add any notes...') }}
+        </div>
+
+        {{ mood_form.submit(class='start-btn w-100 mt-3') }}
+      </form>
+
+      {% for entry in moods %}
+        <div class="glass-card p-3 my-2">
+          <strong>{{ entry.created_at.strftime('%Y-%m-%d') }}:</strong> {{ entry.mood }}
+          {% if entry.notes %}
+            - {{ entry.notes }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

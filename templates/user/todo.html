@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}CalmSpace - ToDo{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tracker.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5">
+    <div class="glass-card p-4 mx-auto" style="max-width:800px;">
+      <h2 class="text-center mb-4">To-Do</h2>
+
+      <form method="POST" class="mb-3">
+        {{ todo_form.hidden_tag() }}
+        <div class="row g-2">
+          <div class="col-md-6">{{ todo_form.task(class="form-control", placeholder="Task") }}</div>
+          <div class="col-md-4">{{ todo_form.detail(class="form-control", placeholder="Details (optional)") }}</div>
+          <div class="col-md-2">{{ todo_form.submit(class="start-btn w-100") }}</div>
+        </div>
+      </form>
+
+      <ul class="list-group">
+        {% for t in todos %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <input type="checkbox" {% if t.done %}checked{% endif %} disabled>
+              <strong>{{ t.task }}</strong> {% if t.detail %}- {{ t.detail }}{% endif %}
+              <div><small class="text-muted">{{ t.created_at.strftime('%Y-%m-%d') }}</small></div>
+            </div>
+            <div>
+              <a href="{{ url_for('main.todo_edit', todo_id=t.id) }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+
+              <form method="POST" action="{{ url_for('main.todo_delete', todo_id=t.id) }}" style="display:inline;">
+                {{ todo_form.hidden_tag() }}
+                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            </div>
+          </li>
+        {% else %}
+          <li class="list-group-item">No tasks yet — add one above.</li>
+        {% endfor %}
+      </ul>
+
+    </div>
+  </section>
+{% endblock %}

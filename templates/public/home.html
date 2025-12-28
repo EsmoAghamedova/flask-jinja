@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}CalmSpace - Home{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tracker.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="hero container text-center">
+    <h2>Track Your Mood & Goals 🌿</h2>
+    <p>Keep track of your daily mood, goals, and habits in one clean, peaceful space.</p>
+    {% if session.get('user_id') %}
+      <a href="{{ url_for('main.tracker') }}" class="start-btn">Start Tracking</a>
+    {% else %}
+      <a href="{{ url_for('main.login') }}" class="start-btn">Start Tracking</a>
+    {% endif %}
+  </section>
+
+  <section class="container mt-5" id="tracker-cards">
+    <div class="row g-4 cards-row">
+      <div class="col-md-4 d-flex">
+        <div class="card glass-card text-center p-4 flex-fill card-eq">
+          <h3>🌞 Mood Tracker</h3>
+          <p>Log your daily mood and notice patterns over time.</p>
+          <a href="{{ url_for('main.mood') if session.get('user_id') else url_for('main.login') }}" class="start-btn mt-2">Log Mood</a>
+        </div>
+      </div>
+
+      <div class="col-md-4 d-flex">
+        <div class="card glass-card text-center p-4 flex-fill card-eq">
+          <h3>📝 Daily To Do List</h3>
+          <p>Set your top 3 tasks and mark them as done.</p>
+          <a href="{{ url_for('main.todo') if session.get('user_id') else url_for('main.login') }}" class="start-btn mt-2">Add Task</a>
+        </div>
+      </div>
+
+      <div class="col-md-4 d-flex">
+        <div class="card glass-card text-center p-4 flex-fill card-eq">
+          <h3>💡 Habit Tracker</h3>
+          <p>Track your habits and see your progress over time.</p>
+          <a href="{{ url_for('main.habit') if session.get('user_id') else url_for('main.login') }}" class="start-btn mt-2">Track Habit</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
