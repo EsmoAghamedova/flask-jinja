@@ -12,7 +12,7 @@
         <p class="text-muted mb-1 small">People</p>
         <h2 class="mb-0">Users</h2>
       </div>
-      <a class="btn btn-outline-secondary" href="{{ url_for('main.admin_dashboard') }}">Back to dashboard</a>
+      <a class="btn btn-outline-secondary" href="{{ url_for('admin.dashboard') }}">Back to dashboard</a>
     </div>
 
     <div class="table-responsive glass-card p-3">
@@ -22,6 +22,7 @@
             <th>Username</th>
             <th>Email</th>
             <th>Admin</th>
+            <th>Status</th>
             <th>Joined</th>
             <th></th>
           </tr>
@@ -32,13 +33,35 @@
               <td>{{ user.username }}</td>
               <td>{{ user.email }}</td>
               <td>{{ 'Yes' if user.is_admin else 'No' }}</td>
+              <td>
+                {% if user.is_banned %}
+                  <span class="badge bg-danger">Banned</span>
+                {% else %}
+                  <span class="badge bg-success">Active</span>
+                {% endif %}
+              </td>
               <td>{{ user.created_at.strftime('%b %d, %Y') if user.created_at else '—' }}</td>
               <td class="text-end">
-                <form method="post" action="{{ url_for('main.admin_user_role', user_id=user.id) }}" class="d-inline">
-                  {{ forms[user.id].hidden_tag() }}
-                  {{ forms[user.id].is_admin(class="form-check-input") }}
+                <form method="post" action="{{ url_for('admin.user_role', user_id=user.id) }}" class="d-inline">
+                  {{ role_forms[user.id].hidden_tag() }}
+                  {{ role_forms[user.id].is_admin(class="form-check-input") }}
                   <label class="form-check-label me-2">Admin</label>
                   <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                </form>
+                {% if user.is_banned %}
+                  <form method="post" action="{{ url_for('admin.user_unban', user_id=user.id) }}" class="d-inline">
+                    {{ action_forms[user.id].hidden_tag() }}
+                    <button type="submit" class="btn btn-sm btn-outline-success">Unban</button>
+                  </form>
+                {% else %}
+                  <form method="post" action="{{ url_for('admin.user_ban', user_id=user.id) }}" class="d-inline">
+                    {{ action_forms[user.id].hidden_tag() }}
+                    <button type="submit" class="btn btn-sm btn-outline-warning">Ban</button>
+                  </form>
+                {% endif %}
+                <form method="post" action="{{ url_for('admin.user_delete', user_id=user.id) }}" class="d-inline">
+                  {{ action_forms[user.id].hidden_tag() }}
+                  <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                 </form>
               </td>
             </tr>
