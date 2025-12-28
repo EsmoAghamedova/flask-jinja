@@ -158,7 +158,7 @@ def habit():
     ).all()
     completion_map = {}
     for entry in recent_entries:
-        completion_map.setdefault(entry.habit_id, set()).add(entry.date)
+        completion_map.setdefault(entry.habit_id, []).append(entry.date)
 
     daily_habits = [habit for habit in habits if (habit.frequency or "").lower() == "daily"]
     weekly_habits = [habit for habit in habits if (habit.frequency or "").lower() == "weekly"]

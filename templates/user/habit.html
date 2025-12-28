@@ -76,7 +76,7 @@
               {% for habit in daily_habits %}
                 <tr>
                   <td>{{ habit.habit }}</td>
-                  {% set completed_dates = completion_map.get(habit.id, set()) %}
+                  {% set completed_dates = completion_map.get(habit.id, []) %}
                   {% for day in last_14_days %}
                     <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
                   {% endfor %}
@@ -105,7 +105,7 @@
               {% for habit in weekly_habits %}
                 <tr>
                   <td>{{ habit.habit }}</td>
-                  {% set completed_dates = completion_map.get(habit.id, set()) %}
+                  {% set completed_dates = completion_map.get(habit.id, []) %}
                   {% for day in last_14_days %}
                     <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
                   {% endfor %}
@@ -134,7 +134,7 @@
               {% for habit in monthly_habits %}
                 <tr>
                   <td>{{ habit.habit }}</td>
-                  {% set completed_dates = completion_map.get(habit.id, set()) %}
+                  {% set completed_dates = completion_map.get(habit.id, []) %}
                   {% for day in last_14_days %}
                     <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
                   {% endfor %}
@@ -163,7 +163,7 @@
               {% for habit in other_habits %}
                 <tr>
                   <td>{{ habit.habit }}</td>
-                  {% set completed_dates = completion_map.get(habit.id, set()) %}
+                  {% set completed_dates = completion_map.get(habit.id, []) %}
                   {% for day in last_14_days %}
                     <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
                   {% endfor %}
