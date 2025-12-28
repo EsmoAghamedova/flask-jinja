@@ -221,8 +221,7 @@ with app.app_context():
     _add_alias('/logout', 'logout', 'auth.logout')
 
     db.create_all()
-    if not USING_POSTGRES:
-        ensure_schema()
+    ensure_schema()
     ensure_seed_data()
 
 if __name__ == "__main__":
