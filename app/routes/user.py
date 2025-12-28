@@ -150,12 +150,37 @@ def habit():
     ).all()
     completed_today = set(e.habit_id for e in entries_today)
 
+    start_date = today - timedelta(days=13)
+    last_14_days = [start_date + timedelta(days=offset) for offset in range(14)]
+    recent_entries = HabitEntry.query.join(Habit).filter(
+        Habit.user_id == user.id,
+        HabitEntry.date >= start_date,
+    ).all()
+    completion_map = {}
+    for entry in recent_entries:
+        completion_map.setdefault(entry.habit_id, set()).add(entry.date)
+
+    daily_habits = [habit for habit in habits if (habit.frequency or "").lower() == "daily"]
+    weekly_habits = [habit for habit in habits if (habit.frequency or "").lower() == "weekly"]
+    monthly_habits = [habit for habit in habits if (habit.frequency or "").lower() == "monthly"]
+    other_habits = [
+        habit
+        for habit in habits
+        if (habit.frequency or "").lower() not in {"daily", "weekly", "monthly"}
+    ]
+
     return render_template(
         "user/habit.html",
         habit_form=habit_form,
         habits=habits,
         completed_today=completed_today,
         action_form=action_form,
+        last_14_days=last_14_days,
+        completion_map=completion_map,
+        daily_habits=daily_habits,
+        weekly_habits=weekly_habits,
+        monthly_habits=monthly_habits,
+        other_habits=other_habits,
     )
 
 

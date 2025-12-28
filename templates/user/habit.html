@@ -55,4 +55,124 @@
 
     </div>
   </section>
+
+  <section class="container mt-4">
+    <div class="glass-card p-4 mx-auto" style="max-width: 1100px;">
+      <h3 class="mb-3">Last 14 Days</h3>
+
+      <h5 class="mt-4">Daily Habits</h5>
+      {% if daily_habits %}
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Habit</th>
+                {% for day in last_14_days %}
+                  <th class="text-center">{{ day.strftime('%b %d') }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for habit in daily_habits %}
+                <tr>
+                  <td>{{ habit.habit }}</td>
+                  {% set completed_dates = completion_map.get(habit.id, set()) %}
+                  {% for day in last_14_days %}
+                    <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">No daily habits yet.</p>
+      {% endif %}
+
+      <h5 class="mt-4">Weekly Habits</h5>
+      {% if weekly_habits %}
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Habit</th>
+                {% for day in last_14_days %}
+                  <th class="text-center">{{ day.strftime('%b %d') }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for habit in weekly_habits %}
+                <tr>
+                  <td>{{ habit.habit }}</td>
+                  {% set completed_dates = completion_map.get(habit.id, set()) %}
+                  {% for day in last_14_days %}
+                    <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">No weekly habits yet.</p>
+      {% endif %}
+
+      <h5 class="mt-4">Monthly Habits</h5>
+      {% if monthly_habits %}
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Habit</th>
+                {% for day in last_14_days %}
+                  <th class="text-center">{{ day.strftime('%b %d') }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for habit in monthly_habits %}
+                <tr>
+                  <td>{{ habit.habit }}</td>
+                  {% set completed_dates = completion_map.get(habit.id, set()) %}
+                  {% for day in last_14_days %}
+                    <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">No monthly habits yet.</p>
+      {% endif %}
+
+      {% if other_habits %}
+        <h5 class="mt-4">Other Habits</h5>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Habit</th>
+                {% for day in last_14_days %}
+                  <th class="text-center">{{ day.strftime('%b %d') }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for habit in other_habits %}
+                <tr>
+                  <td>{{ habit.habit }}</td>
+                  {% set completed_dates = completion_map.get(habit.id, set()) %}
+                  {% for day in last_14_days %}
+                    <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </section>
 {% endblock %}
