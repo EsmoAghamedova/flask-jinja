@@ -19,7 +19,7 @@
     <div class="glass-card p-4">
       <p class="text-muted small mb-2">Updated {{ tip.updated_at.strftime('%b %d, %Y') }}</p>
       <p>{{ tip.body }}</p>
-      <a href="{{ url_for('main.tips') }}" class="start-btn mt-3">Back to tips</a>
+      <a href="{{ url_for('public.tips') }}" class="start-btn mt-3">Back to tips</a>
     </div>
   </section>
 {% endblock %}

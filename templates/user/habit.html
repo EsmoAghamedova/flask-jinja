@@ -8,7 +8,10 @@
 {% block content %}
   <section class="container mt-5">
     <div class="glass-card p-4 mx-auto" style="max-width:800px;">
-      <h2 class="text-center mb-4">Habits</h2>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Habits</h2>
+        <a class="btn btn-outline-secondary" href="{{ url_for('user.habit_stats') }}">View stats</a>
+      </div>
 
       <form method="POST" class="mb-3">
         {{ habit_form.hidden_tag() }}
@@ -28,8 +31,8 @@
             </div>
             <div class="d-flex align-items-center">
               {# tick form: mark/unmark completed for today #}
-              <form method="POST" action="{{ url_for('main.habit_complete', habit_id=h.id) }}" style="display:inline;">
-                {{ habit_form.hidden_tag() }}
+              <form method="POST" action="{{ url_for('user.habit_complete', habit_id=h.id) }}" style="display:inline;">
+                {{ action_form.hidden_tag() }}
                 {% if h.id in completed_today %}
                   <button type="submit" class="btn btn-sm btn-success me-2">✓ Today</button>
                 {% else %}
@@ -37,10 +40,10 @@
                 {% endif %}
               </form>
 
-              <a href="{{ url_for('main.habit_edit', habit_id=h.id) }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+              <a href="{{ url_for('user.habit_edit', habit_id=h.id) }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
 
-              <form method="POST" action="{{ url_for('main.habit_delete', habit_id=h.id) }}" style="display:inline;">
-                {{ habit_form.hidden_tag() }}
+              <form method="POST" action="{{ url_for('user.habit_delete', habit_id=h.id) }}" style="display:inline;">
+                {{ action_form.hidden_tag() }}
                 <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
               </form>
             </div>
@@ -50,6 +53,126 @@
         {% endfor %}
       </ul>
 
+    </div>
+  </section>
+
+  <section class="container mt-4">
+    <div class="glass-card p-4 mx-auto" style="max-width: 1100px;">
+      <h3 class="mb-3">Last 14 Days</h3>
+
+      <h5 class="mt-4">Daily Habits</h5>
+      {% if daily_habits %}
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Habit</th>
+                {% for day in last_14_days %}
+                  <th class="text-center">{{ day.strftime('%b %d') }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for habit in daily_habits %}
+                <tr>
+                  <td>{{ habit.habit }}</td>
+                  {% set completed_dates = completion_map.get(habit.id, []) %}
+                  {% for day in last_14_days %}
+                    <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">No daily habits yet.</p>
+      {% endif %}
+
+      <h5 class="mt-4">Weekly Habits</h5>
+      {% if weekly_habits %}
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Habit</th>
+                {% for day in last_14_days %}
+                  <th class="text-center">{{ day.strftime('%b %d') }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for habit in weekly_habits %}
+                <tr>
+                  <td>{{ habit.habit }}</td>
+                  {% set completed_dates = completion_map.get(habit.id, []) %}
+                  {% for day in last_14_days %}
+                    <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">No weekly habits yet.</p>
+      {% endif %}
+
+      <h5 class="mt-4">Monthly Habits</h5>
+      {% if monthly_habits %}
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Habit</th>
+                {% for day in last_14_days %}
+                  <th class="text-center">{{ day.strftime('%b %d') }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for habit in monthly_habits %}
+                <tr>
+                  <td>{{ habit.habit }}</td>
+                  {% set completed_dates = completion_map.get(habit.id, []) %}
+                  {% for day in last_14_days %}
+                    <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">No monthly habits yet.</p>
+      {% endif %}
+
+      {% if other_habits %}
+        <h5 class="mt-4">Other Habits</h5>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Habit</th>
+                {% for day in last_14_days %}
+                  <th class="text-center">{{ day.strftime('%b %d') }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for habit in other_habits %}
+                <tr>
+                  <td>{{ habit.habit }}</td>
+                  {% set completed_dates = completion_map.get(habit.id, []) %}
+                  {% for day in last_14_days %}
+                    <td class="text-center">{% if day in completed_dates %}✓{% else %}—{% endif %}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
     </div>
   </section>
 {% endblock %}
