@@ -7,7 +7,7 @@ from wtforms import (
     SubmitField,
     TextAreaField,
 )
-from wtforms.validators import DataRequired, Email, Length
+from wtforms.validators import DataRequired, Email, EqualTo, InputRequired, Length
 
 MOOD_CHOICES = [
     ('Happy', 'Happy'),
@@ -63,3 +63,44 @@ class TipForm(FlaskForm):
 class AdminUserForm(FlaskForm):
     is_admin = BooleanField('Admin privileges')
     submit = SubmitField('Update role')
+
+
+class ActionForm(FlaskForm):
+    submit = SubmitField('Confirm')
+
+
+class ProfileForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(max=80)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
+    submit = SubmitField('Save changes')
+
+
+class PasswordChangeForm(FlaskForm):
+    current_password = PasswordField('Current password', validators=[DataRequired()])
+    new_password = PasswordField('New password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField(
+        'Confirm new password',
+        validators=[DataRequired(), EqualTo('new_password', message='Passwords must match.')],
+    )
+    submit = SubmitField('Update password')
+
+
+class ResetProgressForm(FlaskForm):
+    category = SelectField(
+        'Reset category',
+        choices=[
+            ('all', 'All progress'),
+            ('moods', 'Mood entries'),
+            ('todos', 'To-dos'),
+            ('habits', 'Habits'),
+        ],
+        validators=[DataRequired()],
+    )
+    confirm = BooleanField('I understand this action cannot be undone', validators=[InputRequired()])
+    submit = SubmitField('Reset progress')
+
+
+class DeleteAccountForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm = BooleanField('I understand my account will be deleted', validators=[InputRequired()])
+    submit = SubmitField('Delete account')

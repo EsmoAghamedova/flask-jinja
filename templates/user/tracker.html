@@ -10,8 +10,8 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>Your Tracker Dashboard</h2>
       <div>
-        <a href="{{ url_for('main.progress') }}" class="btn start-btn me-2">View Progress</a>
-        <a href="{{ url_for('main.badges') }}" class="btn btn-outline-secondary">View Badges</a>
+        <a href="{{ url_for('user.progress') }}" class="btn start-btn me-2">View Progress</a>
+        <a href="{{ url_for('user.badges') }}" class="btn btn-outline-secondary">View Badges</a>
       </div>
     </div>
 
@@ -21,7 +21,7 @@
           <h4>🧠 Moods</h4>
           <p class="lead mb-1">{{ summary.moods }}</p>
           <p class="text-muted mb-3 small">entries logged</p>
-          <a href="{{ url_for('main.mood') }}" class="start-btn mt-auto">Open Mood Tracker</a>
+          <a href="{{ url_for('user.mood') }}" class="start-btn mt-auto">Open Mood Tracker</a>
         </div>
       </div>
 
@@ -30,7 +30,7 @@
           <h4>✅ To-Do</h4>
           <p class="lead mb-1">{{ summary.todos_done }} / {{ summary.todos }}</p>
           <p class="text-muted mb-3 small">tasks completed</p>
-          <a href="{{ url_for('main.todo') }}" class="start-btn mt-auto">Open To-Do</a>
+          <a href="{{ url_for('user.todo') }}" class="start-btn mt-auto">Open To-Do</a>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
           <h4>🔥 Habits</h4>
           <p class="lead mb-1">{{ summary.habits }}</p>
           <p class="text-muted mb-3 small">active habits</p>
-          <a href="{{ url_for('main.habit') }}" class="start-btn mt-auto">Open Habit Tracker</a>
+          <a href="{{ url_for('user.habit') }}" class="start-btn mt-auto">Open Habit Tracker</a>
         </div>
       </div>
 
@@ -48,7 +48,7 @@
           <h4>🏅 Badges</h4>
           <p class="lead mb-1">{{ badges|length }}</p>
           <p class="text-muted mb-3 small">earned</p>
-          <a href="{{ url_for('main.badges') }}" class="start-btn mt-auto">Get inspired</a>
+          <a href="{{ url_for('user.badges') }}" class="start-btn mt-auto">Get inspired</a>
         </div>
       </div>
     </div>
