@@ -156,7 +156,9 @@ def ensure_schema():
     if "is_admin" not in user_columns:
         db.session.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0"))
     if "is_banned" not in user_columns:
-        db.session.execute(text("ALTER TABLE users ADD COLUMN is_banned BOOLEAN NOT NULL DEFAULT 0"))
+        db.session.execute(
+            text("ALTER TABLE users ADD COLUMN is_banned BOOLEAN NOT NULL DEFAULT FALSE")
+        )
     if "created_at" not in user_columns:
         db.session.execute(text("ALTER TABLE users ADD COLUMN created_at DATETIME"))
 
