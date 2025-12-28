@@ -106,9 +106,10 @@ import os
 from flask import Flask
 from sqlalchemy import inspect, text
 
+from app.common.auth import register_auth_handlers
+from app.routes import admin, auth, public, settings, user
 from extensions import db
 from models import Tip, User
-from routes import main
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "dev-secret-key")
@@ -137,7 +138,12 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 print("USING DATABASE:", app.config["SQLALCHEMY_DATABASE_URI"])
 
-app.register_blueprint(main)
+register_auth_handlers(app)
+app.register_blueprint(public.bp)
+app.register_blueprint(auth.bp)
+app.register_blueprint(user.bp)
+app.register_blueprint(settings.bp)
+app.register_blueprint(admin.bp)
 print("URL map:")
 for rule in app.url_map.iter_rules():
     print(rule.endpoint, "->", rule)
@@ -149,6 +155,8 @@ def ensure_schema():
 
     if "is_admin" not in user_columns:
         db.session.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0"))
+    if "is_banned" not in user_columns:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN is_banned BOOLEAN NOT NULL DEFAULT 0"))
     if "created_at" not in user_columns:
         db.session.execute(text("ALTER TABLE users ADD COLUMN created_at DATETIME"))
 
@@ -200,16 +208,17 @@ with app.app_context():
             else:
                 app.add_url_rule(rule, endpoint=endpoint, view_func=view)
 
-    _add_alias('/', 'home', 'main.home')
-    _add_alias('/tracker', 'tracker', 'main.tracker')
-    _add_alias('/mood', 'mood', 'main.mood', methods=['GET', 'POST'])
-    _add_alias('/habit', 'habit', 'main.habit', methods=['GET', 'POST'])
-    _add_alias('/todo', 'todo', 'main.todo', methods=['GET', 'POST'])
-    _add_alias('/tips', 'tips', 'main.tips')
-    _add_alias('/tip/<int:tip_id>', 'tip', 'main.tip_detail')
-    _add_alias('/badges', 'badges', 'main.badges')
-    _add_alias('/signup', 'signup', 'main.signup', methods=['GET', 'POST'])
-    _add_alias('/login', 'login', 'main.login', methods=['GET', 'POST'])
+    _add_alias('/', 'home', 'public.home')
+    _add_alias('/tracker', 'tracker', 'user.tracker')
+    _add_alias('/mood', 'mood', 'user.mood', methods=['GET', 'POST'])
+    _add_alias('/habit', 'habit', 'user.habit', methods=['GET', 'POST'])
+    _add_alias('/todo', 'todo', 'user.todo', methods=['GET', 'POST'])
+    _add_alias('/tips', 'tips', 'public.tips')
+    _add_alias('/tip/<int:tip_id>', 'tip', 'public.tip_detail')
+    _add_alias('/badges', 'badges', 'user.badges')
+    _add_alias('/signup', 'signup', 'auth.signup', methods=['GET', 'POST'])
+    _add_alias('/login', 'login', 'auth.login', methods=['GET', 'POST'])
+    _add_alias('/logout', 'logout', 'auth.logout')
 
     db.create_all()
     if not USING_POSTGRES:

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
-    <a class="navbar-brand" href="{{ url_for('main.home') }}">CalmSpace</a>
+    <a class="navbar-brand" href="{{ url_for('public.home') }}">CalmSpace</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"><span class="navbar-toggler-icon"></span></button>
 
     <div class="collapse navbar-collapse" id="navMenu">
@@ -17,33 +17,36 @@
 
         {% if session.get('user_id') and current_user and current_user.is_admin %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.admin_dashboard') }}">Admin</a>
+            <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
           </li>
         {% elif session.get('user_id') %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.tips') }}">Tips</a>
+            <a class="nav-link" href="{{ url_for('public.tips') }}">Tips</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.badges') }}">Badges</a>
+            <a class="nav-link" href="{{ url_for('user.badges') }}">Badges</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.tracker') }}">Tracker</a>
+            <a class="nav-link" href="{{ url_for('user.tracker') }}">Tracker</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+            <a class="nav-link" href="{{ url_for('settings.index') }}">Settings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
           </li>
         {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.tips') }}">Tips</a>
+            <a class="nav-link" href="{{ url_for('public.tips') }}">Tips</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.signup') }}">Sign Up</a>
+            <a class="nav-link" href="{{ url_for('auth.signup') }}">Sign Up</a>
           </li>
         {% endif %}
       </ul>

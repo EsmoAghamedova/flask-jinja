@@ -23,7 +23,7 @@
               <span class="badge bg-success mb-2">{{ t.category }}</span>
             {% endif %}
             <p>{{ t.body[:120] ~ ('...' if t.body|length > 120 else '') }}</p>
-            <a href="{{ url_for('main.tip_detail', tip_id=t.id) }}" class="btn start-btn mt-3">Read More</a>
+            <a href="{{ url_for('public.tip_detail', tip_id=t.id) }}" class="btn start-btn mt-3">Read More</a>
           </div>
         </div>
       {% endfor %}
