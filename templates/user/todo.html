@@ -19,25 +19,53 @@
         </div>
       </form>
 
-      <ul class="list-group">
-        {% for t in todos %}
+      <h5 class="mt-4">Active</h5>
+      <ul class="list-group mb-4">
+        {% for t in active_todos %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
-              <input type="checkbox" {% if t.done %}checked{% endif %} disabled>
+              <form method="POST" action="{{ url_for('user.todo_toggle', todo_id=t.id) }}" class="d-inline">
+                {{ action_form.hidden_tag() }}
+                <input class="form-check-input me-2" type="checkbox" onchange="this.form.submit()">
+              </form>
               <strong>{{ t.task }}</strong> {% if t.detail %}- {{ t.detail }}{% endif %}
               <div><small class="text-muted">{{ t.created_at.strftime('%Y-%m-%d') }}</small></div>
             </div>
             <div>
-              <a href="{{ url_for('main.todo_edit', todo_id=t.id) }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
-
-              <form method="POST" action="{{ url_for('main.todo_delete', todo_id=t.id) }}" style="display:inline;">
-                {{ todo_form.hidden_tag() }}
+              <a href="{{ url_for('user.todo_edit', todo_id=t.id) }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+              <form method="POST" action="{{ url_for('user.todo_delete', todo_id=t.id) }}" class="d-inline">
+                {{ action_form.hidden_tag() }}
                 <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
               </form>
             </div>
           </li>
         {% else %}
-          <li class="list-group-item">No tasks yet — add one above.</li>
+          <li class="list-group-item">No active tasks — add one above.</li>
+        {% endfor %}
+      </ul>
+
+      <h5>Completed</h5>
+      <ul class="list-group">
+        {% for t in completed_todos %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <form method="POST" action="{{ url_for('user.todo_toggle', todo_id=t.id) }}" class="d-inline">
+                {{ action_form.hidden_tag() }}
+                <input class="form-check-input me-2" type="checkbox" checked onchange="this.form.submit()">
+              </form>
+              <strong>{{ t.task }}</strong> {% if t.detail %}- {{ t.detail }}{% endif %}
+              <div><small class="text-muted">{{ t.created_at.strftime('%Y-%m-%d') }}</small></div>
+            </div>
+            <div>
+              <a href="{{ url_for('user.todo_edit', todo_id=t.id) }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+              <form method="POST" action="{{ url_for('user.todo_delete', todo_id=t.id) }}" class="d-inline">
+                {{ action_form.hidden_tag() }}
+                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            </div>
+          </li>
+        {% else %}
+          <li class="list-group-item">No completed tasks yet.</li>
         {% endfor %}
       </ul>
 

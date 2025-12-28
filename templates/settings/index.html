@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Settings{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/tracker.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <section class="container mt-5">
+    <div class="glass-card p-4 mx-auto" style="max-width:900px;">
+      <h2 class="mb-4">Account Settings</h2>
+
+      <div class="mb-5">
+        <h5>Profile</h5>
+        <form method="POST" action="{{ url_for('settings.update_profile') }}">
+          {{ profile_form.hidden_tag() }}
+          <div class="row g-3">
+            <div class="col-md-6">{{ profile_form.username(class="form-control", placeholder="Username") }}</div>
+            <div class="col-md-6">{{ profile_form.email(class="form-control", placeholder="Email") }}</div>
+          </div>
+          <div class="mt-3">
+            {{ profile_form.submit(class="start-btn") }}
+          </div>
+        </form>
+      </div>
+
+      <div class="mb-5">
+        <h5>Change Password</h5>
+        <form method="POST" action="{{ url_for('settings.change_password') }}">
+          {{ password_form.hidden_tag() }}
+          <div class="row g-3">
+            <div class="col-md-4">{{ password_form.current_password(class="form-control", placeholder="Current password") }}</div>
+            <div class="col-md-4">{{ password_form.new_password(class="form-control", placeholder="New password") }}</div>
+            <div class="col-md-4">{{ password_form.confirm_password(class="form-control", placeholder="Confirm new password") }}</div>
+          </div>
+          <div class="mt-3">
+            {{ password_form.submit(class="start-btn") }}
+          </div>
+        </form>
+      </div>
+
+      <div class="mb-5">
+        <h5>Reset Progress</h5>
+        <p class="text-muted">Choose what to reset. This cannot be undone.</p>
+        <form method="POST" action="{{ url_for('settings.reset_progress') }}">
+          {{ reset_form.hidden_tag() }}
+          <div class="row g-3 align-items-center">
+            <div class="col-md-4">{{ reset_form.category(class="form-control") }}</div>
+            <div class="col-md-8">
+              <div class="form-check">
+                {{ reset_form.confirm(class="form-check-input") }}
+                <label class="form-check-label" for="{{ reset_form.confirm.id }}">{{ reset_form.confirm.label.text }}</label>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3">
+            {{ reset_form.submit(class="btn btn-outline-danger") }}
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <h5>Delete Account</h5>
+        <p class="text-muted">Deleting your account removes your data and cannot be undone.</p>
+        <form method="POST" action="{{ url_for('settings.delete_account') }}">
+          {{ delete_form.hidden_tag() }}
+          <div class="row g-3 align-items-center">
+            <div class="col-md-4">{{ delete_form.password(class="form-control", placeholder="Password") }}</div>
+            <div class="col-md-8">
+              <div class="form-check">
+                {{ delete_form.confirm(class="form-check-input") }}
+                <label class="form-check-label" for="{{ delete_form.confirm.id }}">{{ delete_form.confirm.label.text }}</label>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3">
+            {{ delete_form.submit(class="btn btn-danger") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock %}
