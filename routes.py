@@ -121,7 +121,7 @@ def load_user():
 @main.route("/")
 def home():
     user = get_current_user()
-    return render_template("home.html", user=user)
+    return render_template("public/home.html", user=user)
 
 
 @main.route("/tips")
@@ -130,7 +130,7 @@ def tips():
     if user and user.is_admin:
         return redirect(url_for("main.admin_dashboard"))
     all_tips = Tip.query.order_by(Tip.created_at.desc()).all()
-    return render_template("tips.html", tips=all_tips)
+    return render_template("public/tips.html", tips=all_tips)
 
 
 @main.route("/tip/<int:tip_id>")
@@ -139,7 +139,7 @@ def tip_detail(tip_id):
     if user and user.is_admin:
         return redirect(url_for("main.admin_dashboard"))
     tip = Tip.query.get_or_404(tip_id)
-    return render_template("tip.html", tip=tip)
+    return render_template("public/tip.html", tip=tip)
 
 @main.route("/tracker")
 @login_required  
@@ -154,7 +154,7 @@ def tracker():
     badges = calculate_badges(user.id)
 
     return render_template(
-        "tracker.html",
+        "user/tracker.html",
         summary={
             "moods": mood_count,
             "todos": todo_count,
@@ -184,7 +184,7 @@ def badges():
                 "unlocked": unlocked,
             }
         )
-    return render_template("badges.html", badges=all_badges, stats=stats)
+    return render_template("user/badges.html", badges=all_badges, stats=stats)
 
 @main.route("/mood", methods=["GET", "POST"])
 @login_required
@@ -210,7 +210,7 @@ def mood():
         .order_by(Mood.created_at.desc())
         .all()
     )
-    return render_template("mood.html", mood_form=mood_form, moods=moods)
+    return render_template("user/mood.html", mood_form=mood_form, moods=moods)
 
 
 @main.route("/mood/edit/<int:mood_id>", methods=["GET", "POST"])
@@ -231,7 +231,7 @@ def mood_edit(mood_id):
             return redirect(url_for("main.mood"))
         else:
             flash("Please correct the errors in the form.", "danger")
-    return render_template("mood_edit.html", mood_form=mood_form, mood=mood_obj)
+    return render_template("user/mood_edit.html", mood_form=mood_form, mood=mood_obj)
 
 
 @main.route("/mood/delete/<int:mood_id>", methods=["POST"])
@@ -280,7 +280,7 @@ def habit():
     completed_today = set(e.habit_id for e in entries_today)
 
     return render_template(
-        "habit.html", habit_form=habit_form, habits=habits, completed_today=completed_today
+        "user/habit.html", habit_form=habit_form, habits=habits, completed_today=completed_today
     )
 
 
@@ -325,7 +325,7 @@ def habit_edit(habit_id):
             return redirect(url_for("main.habit"))
         else:
             flash("Please correct the errors in the form.", "danger")
-    return render_template("habit_edit.html", habit_form=habit_form, habit=habit_obj)
+    return render_template("user/habit_edit.html", habit_form=habit_form, habit=habit_obj)
 
 
 @main.route("/habit/delete/<int:habit_id>", methods=["POST"])
@@ -367,7 +367,7 @@ def todo():
         .order_by(ToDo.created_at.desc())
         .all()
     )
-    return render_template("todo.html", todo_form=todo_form, todos=todos)
+    return render_template("user/todo.html", todo_form=todo_form, todos=todos)
 
 
 @main.route("/todo/edit/<int:todo_id>", methods=["GET", "POST"])
@@ -389,7 +389,7 @@ def todo_edit(todo_id):
             return redirect(url_for("main.todo"))
         else:
             flash("Please correct the errors in the form.", "danger")
-    return render_template("todo_edit.html", todo_form=todo_form, todo=todo_obj)
+    return render_template("user/todo_edit.html", todo_form=todo_form, todo=todo_obj)
 
 
 @main.route("/todo/delete/<int:todo_id>", methods=["POST"])
@@ -425,7 +425,7 @@ def signup():
             return redirect(url_for("main.login"))
         else:
             flash("Please correct the errors in the sign-up form.", "danger")
-    return render_template("signup.html", form=form)
+    return render_template("public/signup.html", form=form)
 
 
 @main.route("/login", methods=["GET", "POST"])
@@ -447,7 +447,7 @@ def login():
             flash("Invalid email or password", "danger")
         else:
             flash("Please correct the errors in the login form.", "danger")
-    return render_template("login.html", form=form)
+    return render_template("public/login.html", form=form)
 
 
 @main.route("/logout")
@@ -499,7 +499,7 @@ def progress():
             habits_done_count[key] += 1
 
     return render_template(
-        "progress.html",
+        "user/progress.html",
         labels=labels,
         moods_data=list(moods_count.values()),
         todos_data=list(todos_done_count.values()),
