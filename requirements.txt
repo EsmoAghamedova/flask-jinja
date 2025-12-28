@@ -13,5 +13,6 @@ Flask-Bcrypt==1.0.1
 
 Flask-SQLAlchemy==3.0.5
 SQLAlchemy==2.0.36
+psycopg>=3.1
 
 gunicorn==23.0.0
