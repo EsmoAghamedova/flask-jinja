@@ -32,28 +32,7 @@
         <span class="close-btn" onclick="closeNewYearPopup()">×</span>
         <h1 class="new-year-title">🎉 Happy New Year 2026! 🎉</h1>
         <p class="congratulations-text">Welcome to a new chapter of growth and peace!</p>
-        <div class="countdown-section">
-          <p class="countdown-label">Countdown to New Year:</p>
-          <div class="countdown-display">
-            <div class="countdown-item">
-              <span class="countdown-value" id="days_popup">00</span>
-              <span class="countdown-label-small">Days</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-value" id="hours_popup">00</span>
-              <span class="countdown-label-small">Hours</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-value" id="minutes_popup">00</span>
-              <span class="countdown-label-small">Minutes</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-value" id="seconds_popup">00</span>
-              <span class="countdown-label-small">Seconds</span>
-            </div>
-          </div>
-        </div>
-        <p class="new-year-message" id="popupCongrats" style="display:none">Make this year count! 💚✨</p>
+        <p class="new-year-message" id="popupCongrats" style="display:block">🎉 It's time to celebrate! Wishing you a joyful and peaceful year ahead. 💚✨</p>
       </div>
     </div>
 
@@ -61,30 +40,17 @@
     <div id="newYearBar" class="new-year-bar" style="display:none">
       <div class="container d-flex align-items-center justify-content-between">
         <div class="bar-left">
-          <strong>Countdown to New Year</strong>
-        </div>
-
-        <div class="countdown-display" id="countdownDisplay">
-          <div class="countdown-item">
-            <span class="countdown-value" id="days">00</span>
-            <span class="countdown-label-small">Days</span>
-          </div>
-          <div class="countdown-item">
-            <span class="countdown-value" id="hours">00</span>
-            <span class="countdown-label-small">Hours</span>
-          </div>
-          <div class="countdown-item">
-            <span class="countdown-value" id="minutes">00</span>
-            <span class="countdown-label-small">Minutes</span>
-          </div>
-          <div class="countdown-item">
-            <span class="countdown-value" id="seconds">00</span>
-            <span class="countdown-label-small">Seconds</span>
-          </div>
-        </div>
-
-        <div class="congrats-message" id="congratsMessage" style="display:none">
           <strong>🎉 Happy New Year 2026! 🎉</strong>
+        </div>
+
+        <div class="countdown-display" id="countdownDisplay" style="display:none"></div>
+
+        <div class="congrats-message" id="congratsMessage" style="display:block">
+          <strong>Wishing you a joyful and peaceful year ahead.</strong>
+        </div>
+
+        <div class="bar-close ms-3">
+          <button type="button" class="btn btn-sm btn-outline-light" onclick="closeNewYearBar()">✕</button>
         </div>
       </div>
       <div class="confetti-container" id="confettiContainer"></div>
@@ -97,9 +63,13 @@
     {% include 'components/_footer.html' %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- New Year Inline Countdown and Confetti Script -->
+    <!-- New Year Inline Celebration and Confetti Script -->
     <script>
       let confettiTimeout = null
+      
+      const NEW_YEAR_POPUP_KEY = 'newYearPopupShown_2026'
+      const NEW_YEAR_BAR_KEY = 'newYearBarClosed_2026'
+      
       function createConfetti(containerId = 'confettiContainer', duration = 8000) {
         const container = document.getElementById(containerId)
         if (!container) return
@@ -126,76 +96,71 @@
         }, duration)
       }
       
-      let _countdownTriggered = false
-      function updateCountdown() {
-        const now = new Date()
-        const nextYear = new Date(now.getFullYear() + 1, 0, 1)
-        const diff = nextYear - now
-      
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000)
-      
-        // elements in bar
-        const daysEl = document.getElementById('days')
-        const hoursEl = document.getElementById('hours')
-        const minutesEl = document.getElementById('minutes')
-        const secondsEl = document.getElementById('seconds')
-        // elements in popup
-        const daysP = document.getElementById('days_popup')
-        const hoursP = document.getElementById('hours_popup')
-        const minutesP = document.getElementById('minutes_popup')
-        const secondsP = document.getElementById('seconds_popup')
-      
-        const display = document.getElementById('countdownDisplay')
-        const congrats = document.getElementById('congratsMessage')
-        const popup = document.getElementById('newYearPopup')
-        const popupCongrats = document.getElementById('popupCongrats')
-      
-        if (diff > 0) {
-          if (daysEl) daysEl.textContent = String(days).padStart(2, '0')
-          if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0')
-          if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0')
-          if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0')
-      
-          if (daysP) daysP.textContent = String(days).padStart(2, '0')
-          if (hoursP) hoursP.textContent = String(hours).padStart(2, '0')
-          if (minutesP) minutesP.textContent = String(minutes).padStart(2, '0')
-          if (secondsP) secondsP.textContent = String(seconds).padStart(2, '0')
-        } else {
-          if (!_countdownTriggered) {
-            _countdownTriggered = true
-            // if popup still visible, show congrats there and confetti in popup
-            if (popup && window.getComputedStyle(popup).display !== 'none') {
-              if (popupCongrats) popupCongrats.style.display = 'block'
-              createConfetti('confettiPopup', 12000)
-            } else {
-              if (display) display.style.display = 'none'
-              if (congrats) congrats.style.display = 'block'
-              createConfetti('confettiContainer', 12000)
-            }
-          }
-        }
-      }
-      
       function closeNewYearPopup() {
         const popup = document.getElementById('newYearPopup')
         const bar = document.getElementById('newYearBar')
+        const confettiPopup = document.getElementById('confettiPopup')
+      
+        // remember: popup was seen/closed
+        localStorage.setItem(NEW_YEAR_POPUP_KEY, '1')
+      
         if (popup) {
           popup.style.opacity = '0'
           setTimeout(() => {
             popup.style.display = 'none'
-            if (bar) bar.style.display = 'block'
+      
+            const barClosed = localStorage.getItem(NEW_YEAR_BAR_KEY) === '1'
+            if (bar && !barClosed) bar.style.display = 'block'
+      
+            if (confettiPopup) confettiPopup.innerHTML = ''
           }, 250)
-        } else if (bar) {
-          bar.style.display = 'block'
+        }
+      
+        if (confettiTimeout) {
+          clearTimeout(confettiTimeout)
+          confettiTimeout = null
         }
       }
       
+      function closeNewYearBar() {
+        // remember: bar was closed
+        localStorage.setItem(NEW_YEAR_BAR_KEY, '1')
+      
+        const bar = document.getElementById('newYearBar')
+        const confetti = document.getElementById('confettiContainer')
+      
+        if (bar) bar.style.display = 'none'
+        if (confetti) confetti.innerHTML = ''
+      }
+      
       document.addEventListener('DOMContentLoaded', function () {
-        updateCountdown()
-        setInterval(updateCountdown, 1000)
+        const popup = document.getElementById('newYearPopup')
+        const bar = document.getElementById('newYearBar')
+        const popupCongrats = document.getElementById('popupCongrats')
+      
+        const popupSeen = localStorage.getItem(NEW_YEAR_POPUP_KEY) === '1'
+        const barClosed = localStorage.getItem(NEW_YEAR_BAR_KEY) === '1'
+      
+        if (!popupSeen) {
+          if (popup) {
+            popup.style.display = 'flex'
+            popup.style.opacity = '1'
+            popup.addEventListener('click', (e) => {
+              if (e.target === popup) closeNewYearPopup()
+            })
+          }
+      
+          if (popupCongrats) popupCongrats.style.display = 'block'
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeNewYearPopup()
+          })
+      
+          createConfetti('confettiPopup', 12000)
+        } else {
+          if (popup) popup.style.display = 'none'
+          if (bar && !barClosed) bar.style.display = 'block'
+          if (bar && barClosed) bar.style.display = 'none'
+        }
       })
     </script>
 
