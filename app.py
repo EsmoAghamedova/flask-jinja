@@ -61,7 +61,7 @@ def ensure_schema():
             text("ALTER TABLE users ADD COLUMN is_banned BOOLEAN NOT NULL DEFAULT FALSE")
         )
     if "created_at" not in user_columns:
-        db.session.execute(text("ALTER TABLE users ADD COLUMN created_at DATETIME"))
+        db.session.execute(text("ALTER TABLE users ADD COLUMN created_at TIMESTAMPTZ"))
 
     if not inspector.has_table("tips"):
         Tip.__table__.create(db.engine)
