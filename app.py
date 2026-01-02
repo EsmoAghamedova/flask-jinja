@@ -53,7 +53,7 @@ def ensure_schema():
     if "email_verified" not in user_columns:
         db.session.execute(text("ALTER TABLE users ADD COLUMN email_verified BOOLEAN NOT NULL DEFAULT FALSE"))
     if "email_verified_at" not in user_columns:
-        db.session.execute(text("ALTER TABLE users ADD COLUMN email_verified_at DATETIME"))
+        db.session.execute(text("ALTER TABLE users ADD COLUMN email_verified_at TIMESTAMPTZ"))
     if "is_admin" not in user_columns:
         db.session.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0"))
     if "is_banned" not in user_columns:
