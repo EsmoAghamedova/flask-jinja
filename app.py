@@ -50,6 +50,10 @@ def ensure_schema():
     inspector = inspect(db.engine)
     user_columns = {col["name"] for col in inspector.get_columns("users")} if inspector.has_table("users") else set()
 
+    if "email_verified" not in user_columns:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN email_verified BOOLEAN NOT NULL DEFAULT FALSE"))
+    if "email_verified_at" not in user_columns:
+        db.session.execute(text("ALTER TABLE users ADD COLUMN email_verified_at DATETIME"))
     if "is_admin" not in user_columns:
         db.session.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0"))
     if "is_banned" not in user_columns:

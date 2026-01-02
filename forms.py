@@ -51,7 +51,10 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log in')
-
+    
+class ResendForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
+    submit = SubmitField('Create account')
 
 class TipForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=150)])
