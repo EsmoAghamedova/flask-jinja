@@ -55,13 +55,24 @@ class LoginForm(FlaskForm):
 class ResendForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
     submit = SubmitField('Create account')
+    
+class ForgotPasswordForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
+    submit = SubmitField('Reset password')
+    
+class ResetPasswordForm(FlaskForm):
+    new_password = PasswordField('New password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField(
+        'Confirm new password',
+        validators=[DataRequired(), EqualTo('new_password', message='Passwords must match.')],
+    )
+    submit = SubmitField('Update password')
 
 class TipForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=150)])
     body = TextAreaField('Content', validators=[DataRequired()])
     category = StringField('Category', validators=[Length(max=80)])
     submit = SubmitField('Save')
-
 
 class AdminUserForm(FlaskForm):
     is_admin = BooleanField('Admin privileges')

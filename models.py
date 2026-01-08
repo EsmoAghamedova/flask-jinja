@@ -15,6 +15,9 @@ class User(db.Model):
     email_verified_at = db.Column(db.DateTime)
     is_banned = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    password_reset_jti = db.Column(db.String(100))
+    password_reset_used_at = db.Column(db.DateTime)
 
     moods = db.relationship('Mood', backref='user', lazy=True, cascade="all, delete-orphan")
     todos = db.relationship('ToDo', backref='user', lazy=True, cascade="all, delete-orphan")

@@ -26,8 +26,12 @@
         {{ form.submit(class="start-btn w-100 mt-3") }}
       </form>
 
-      <a href="{{ url_for('auth.resend') }}">Didn't get the email?</a>
-
+      <div>
+      <a href="{{ url_for('auth.forgot_password') }}">Forgot your password?</a>
+      </div>
+      <div>
+      <a href="{{ url_for('auth.resend') }}">Didn't get the verification email?</a>
+      </div>
       <p class="text-center mt-3">
         Don't have an account?
         <a href="{{ url_for('auth.signup') }}" class="text-decoration-none">Sign Up</a>

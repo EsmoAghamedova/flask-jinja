@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
-import os
-from flask import app, current_app
+from flask import current_app
 import jwt
+import secrets
 
 def generate_token(user_id, purpose, expires_in=86400):
     payload = {
@@ -9,9 +9,15 @@ def generate_token(user_id, purpose, expires_in=86400):
         'purpose': purpose,
         'exp': datetime.utcnow() + timedelta(seconds=expires_in)
     }
-
+    
+    jti = None
+    
+    if purpose == 'reset':
+        jti = secrets.token_urlsafe(16)
+        payload["jti"] = jti
+        
     token = jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
-    return token
+    return token, jti
 
 def read_token(token, expected_purpose):
     try:

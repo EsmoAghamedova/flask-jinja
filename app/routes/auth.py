@@ -2,7 +2,7 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from datetime import datetime
 
 from extensions import db
-from forms import LoginForm, SignupForm, ResendForm
+from forms import LoginForm, ResetPasswordForm, SignupForm, ResendForm, ForgotPasswordForm
 from models import User
 from app.utils.tokens import generate_token, read_token
 from app.utils.email import send_email
@@ -153,6 +153,104 @@ def resend():
         flash("Please correct the errors in the form.", "danger")
 
     return render_template("public/resend.html", form=form)
+
+# @bp.route("/reset-password", methods=["GET", "POST"])
+# def reset_password():
+#     token = request.form.get("token")
+#     if not token:
+#         flash("token is missing", "danger")
+#         return redirect(url_for("auth.login"))
+    
+#     user_id = read_token(token, "reset")
+    
+#     if not user_id:
+#         flash("user_id is missing", "danger")
+#         return redirect(url_for("auth.login"))
+    
+#     user = User.query.get(user_id)
+    
+#     if not user:
+#         flash("User not found", "danger")
+#         return redirect(url_for("auth.login"))
+    
+#     return render_template("public/reset_password.html", form=form, token=token)
+    
+    
+
+@bp.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    form = ForgotPasswordForm()
+
+    if request.method == "POST" and form.validate_on_submit():
+        email = form.email.data.strip().lower()
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            token = generate_token(user.id, "reset", expires_in=600)  # 10 minutes
+            reset_link = url_for("auth.reset_password", token=token, _external=True)
+
+            subject = "Reset your password"
+            body = (
+                "You requested a password reset.\n\n"
+                "This link expires in 10 minutes:\n"
+                f"{reset_link}\n\n"
+                "If you didn’t request this, you can ignore this email."
+            )
+            send_email(user.email, subject, body)
+
+        flash("If that email exists, we sent a password reset link.", "info")
+        return redirect(url_for("auth.login"))
+
+    if request.method == "POST":
+        flash("Please correct the errors in the form.", "danger")
+
+    return render_template("public/forgot_password.html", form=form)
+
+    
+    
+
+@bp.route("/reset-password", methods=["GET", "POST"])
+def reset_password():
+    form = ResetPasswordForm()
+
+    if request.method == "GET":
+        token = request.args.get("token")
+    else:
+        token = request.form.get("token")
+
+    if not token:
+        flash("Reset link is missing. Please request a new one.", "danger")
+        return redirect(url_for("auth.forgot_password"))
+
+    user_id = read_token(token, "reset")
+    if not user_id:
+        flash("Reset link is invalid or expired. Please request a new one.", "danger")
+        return redirect(url_for("auth.forgot_password"))
+
+    user = User.query.get(user_id)
+    if not user:
+        flash("Reset link is invalid or expired. Please request a new one.", "danger")
+        return redirect(url_for("auth.forgot_password"))
+
+    if user.password_reset_used_at:
+        flash("This reset link was already used. Please request a new one.", "info")
+        return redirect(url_for("auth.forgot_password"))
+
+    if request.method == "GET":
+        return render_template("public/reset_password.html", form=form, token=token)
+
+    if form.validate_on_submit():
+        user.set_password(form.new_password.data)
+        user.password_reset_used_at = datetime.utcnow()
+        db.session.commit()
+
+        flash("Password updated successfully. You can now log in.", "success")
+        return redirect(url_for("auth.login"))
+
+    flash("Please correct the errors in the form.", "danger")
+    return render_template("public/reset_password.html", form=form, token=token)
+
+
     
 @bp.route("/logout")
 def logout():
