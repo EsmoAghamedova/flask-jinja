@@ -46,25 +46,56 @@ for rule in app.url_map.iter_rules():
     print(rule.endpoint, "->", rule)
 
 
+from sqlalchemy import inspect, text
+
 def ensure_schema():
     inspector = inspect(db.engine)
-    user_columns = {col["name"] for col in inspector.get_columns("users")} if inspector.has_table("users") else set()
+    user_columns = (
+        {col["name"] for col in inspector.get_columns("users")}
+        if inspector.has_table("users")
+        else set()
+    )
 
     if "email_verified" not in user_columns:
-        db.session.execute(text("ALTER TABLE users ADD COLUMN email_verified BOOLEAN NOT NULL DEFAULT FALSE"))
+        db.session.execute(
+            text("ALTER TABLE users ADD COLUMN email_verified BOOLEAN NOT NULL DEFAULT FALSE")
+        )
+
     if "email_verified_at" not in user_columns:
-        db.session.execute(text("ALTER TABLE users ADD COLUMN email_verified_at TIMESTAMPTZ"))
+        db.session.execute(
+            text("ALTER TABLE users ADD COLUMN email_verified_at TIMESTAMPTZ")
+        )
+
     if "is_admin" not in user_columns:
-        db.session.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0"))
+        db.session.execute(
+            text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT FALSE")
+        )
+
     if "is_banned" not in user_columns:
         db.session.execute(
             text("ALTER TABLE users ADD COLUMN is_banned BOOLEAN NOT NULL DEFAULT FALSE")
         )
+
     if "created_at" not in user_columns:
-        db.session.execute(text("ALTER TABLE users ADD COLUMN created_at TIMESTAMPTZ"))
+        db.session.execute(
+            text("ALTER TABLE users ADD COLUMN created_at TIMESTAMPTZ")
+        )
+
+    if "password_reset_jti" not in user_columns:
+        db.session.execute(
+            text("ALTER TABLE users ADD COLUMN password_reset_jti VARCHAR(100)")
+        )
+
+    if "password_reset_used_at" not in user_columns:
+        db.session.execute(
+            text("ALTER TABLE users ADD COLUMN password_reset_used_at TIMESTAMPTZ")
+        )
+
+    db.session.commit()
 
     if not inspector.has_table("tips"):
         Tip.__table__.create(db.engine)
+
 
     db.session.commit()
 
