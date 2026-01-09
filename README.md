@@ -1,9 +1,10 @@
-
 # CalmSpace 🌿
-*A calm productivity & wellness tracker built with Flask*
+*A calm productivity & wellness tracker built with Flask.*
 
 ![Flask](https://img.shields.io/badge/Flask-Backend-black)
-![SQLite](https://img.shields.io/badge/SQLite-Database-blue)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-red)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![SQLite](https://img.shields.io/badge/SQLite-Dev%20Database-lightgrey)
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
@@ -15,24 +16,36 @@ Track moods, habits, and tasks, earn badges, and explore wellness tips — all i
 ## ✨ Features
 - 🧠 Mood tracking with notes
 - ✅ To-do list with completion state
-- 🔁 Habit tracker with checklists
+- 🔁 Habit tracker with check-ins
 - 💡 Tips system stored in database
 - 🏅 Achievement badges & progress rewards
 - 📊 Admin statistics dashboard
-- 🛡️ Admin controls (ban/delete users, manage tips)
-- 🔐 Secure authentication (hashed passwords + Flask-Login)
+- 🛡️ Admin controls (ban users, manage tips)
+- 🔐 Secure authentication (hashed passwords)
+- 📩 Email verification (Resend)
+- 🔁 Password reset via email token (Resend)
 
 ---
 
-## 📊 App Statistics (Admin)
-Admins can view:
+## 🧠 How Auth Works
+**Email Verification**
+- User signs up → receives a verification link (token with purpose=`verify`, expires)
+- Clicking the link sets `email_verified=True`
+
+**Password Reset**
+- User requests reset → receives a reset link (token with purpose=`reset`, expires)
+- GET `/reset-password` validates token + shows form
+- POST `/reset-password` validates again + updates password (and marks token used)
+
+---
+
+## 📊 Admin Statistics
+Admins can view live stats such as:
 - 👥 Total registered users
 - 😊 Total moods logged
 - ✅ Completed tasks count
 - 🔥 Habit check-ins
 - 💡 Total tips in database
-
-Stats are calculated live from the database.
 
 ---
 
@@ -43,14 +56,43 @@ Users can unlock badges such as:
 - 🔥 7-Day Habit Streak
 - 🧠 Consistency Master
 
-Badges are awarded automatically based on activity.
+---
+
+## 🧭 Main Pages
+- `/` — Home
+- `/auth/signup` — Sign up
+- `/auth/login` — Log in
+- `/auth/resend` — Resend verification email
+- `/auth/forgot-password` — Request password reset
+- `/auth/reset-password` — Reset password (token link)
+- `/tracker` — Mood / Habit / To-do
+- `/tips` — Tips library
+- `/badges` — User achievements
+- `/admin` — Admin dashboard
+
+---
+
+## 🗂️ Project Structure (example)
+```
+app.py
+app/
+  __init__.py
+  wsgi.py
+  extensions.py
+  models/
+  routes/
+  forms/
+  utils/
+  templates/
+  static/
+```
 
 ---
 
 ## 🚀 Getting Started
 ```bash
 python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+source .venv/bin/activate
 pip install -r requirements.txt
 python app.py
 ```
@@ -61,38 +103,10 @@ http://127.0.0.1:4000
 ---
 
 ## 🔐 Admin Access
-An admin account is created on first run:
+- Email: 
+- Password: 
 
-- Email: admin@calmspace.test
-- Password: admin1234
-
-You can override via environment variables:
-```bash
-export ADMIN_EMAIL="you@example.com"
-export ADMIN_PASSWORD="supersecret"
-```
-
----
-
-## 🧭 Pages
-- `/` — Home
-- `/tracker` — Mood / Habit / To-do
-- `/tips` — Tips library
-- `/badges` — User achievements
-- `/admin` — Admin dashboard
-
----
-
-## 🗂️ Project Structure
-```
-app.py          # App setup & seeding
-routes.py       # Blueprints & logic
-models.py       # Database models
-forms.py        # WTForms
-templates/      # Jinja templates
-static/         # CSS & assets
-```
-
+(i will add it...i have admin acces but with my personal email and i dont want share it :) )
 ---
 
 ## 🎨 UI Style
@@ -103,4 +117,4 @@ static/         # CSS & assets
 ---
 
 ## 📜 License
-🪪 Licensed under the MIT License
+MIT License
