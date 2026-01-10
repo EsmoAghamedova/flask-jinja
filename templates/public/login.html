@@ -2,7 +2,7 @@
 {% block title %}CalmSpace - Login{% endblock %}
 
 {% block css %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='style/login.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/signup.css') }}" />
 {% endblock %}
 
 {% block content %}
@@ -27,10 +27,10 @@
       </form>
 
       <div>
-      <a href="{{ url_for('auth.forgot_password') }}">Forgot your password?</a>
+      <a href="{{ url_for('auth.forgot_password') }}" style="text-decoration: none; margin-top: 30px;">Forgot your password?</a>
       </div>
       <div>
-      <a href="{{ url_for('auth.resend') }}">Didn't get the verification email?</a>
+      <a href="{{ url_for('auth.resend') }}" style="text-decoration: none; margin-top: 10px;">Didn't get the verification email?</a>
       </div>
       <p class="text-center mt-3">
         Don't have an account?

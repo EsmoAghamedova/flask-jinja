@@ -78,6 +78,7 @@ nav a:hover {
 .carousel-img {
     object-fit: fill !important;
 }
+
 .start-btn {
     margin-top: 10px;
     display: inline-block;
@@ -141,7 +142,7 @@ footer {
     background: #1f1f1f;
     color: #eee;
     padding: 40px 0;
-    margin-top: 50px;
+    /* margin-top: 50px;  */
 }
 
 .footer-container {

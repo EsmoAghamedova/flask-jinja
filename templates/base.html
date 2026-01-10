@@ -10,6 +10,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style/effects.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='style/newyear.css') }}" />
 
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      
+      .page-wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .content {
+        flex: 1;
+      }
+    </style>
+
     {% block css %}
 
     {% endblock %}
@@ -25,7 +43,16 @@
     <div id="snowflakes" aria-hidden="true"></div>
     {% include 'components/_navbar.html' %}
 
-    <!-- New Year Popup (shows first). After close, the inline bar will appear under navbar -->
+    {% with messages=get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <li class="list-unstyled position-fixed top-0 start-50 translate-middle-x mt-3 z-9999" style="max-width: 500px; width: 90%;">
+            <div class="alert alert-{{ category }} mb-0" role="alert">{{ message }}</div>
+          </li>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     <div id="newYearPopup" class="new-year-popup-container">
       <div class="new-year-card">
         <div class="confetti-container" id="confettiPopup"></div>
@@ -36,7 +63,6 @@
       </div>
     </div>
 
-    <!-- Inline New Year Countdown Bar (appears under navbar after popup is closed) -->
     <div id="newYearBar" class="new-year-bar" style="display:none">
       <div class="container d-flex align-items-center justify-content-between">
         <div class="bar-left">
@@ -56,11 +82,16 @@
       <div class="confetti-container" id="confettiContainer"></div>
     </div>
 
-    {% block content %}
+    <div class="page-wrapper">
+      <main class="content">
+        {% block content %}
 
-    {% endblock %}
+        {% endblock %}
+      </main>
 
-    {% include 'components/_footer.html' %}
+      {% include 'components/_footer.html' %}
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- New Year Inline Celebration and Confetti Script -->
