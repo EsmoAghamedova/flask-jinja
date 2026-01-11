@@ -79,7 +79,7 @@ nav a:hover {
 }
 
 .start-btn {
-    margin-top: 10px;
+    /* margin-top: 10px; */
     display: inline-block;
     background: #004d40;
     color: white;
