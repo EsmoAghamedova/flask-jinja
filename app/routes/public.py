@@ -9,6 +9,10 @@ bp = Blueprint("public", __name__)
 @bp.route("/")
 def home():
     user = get_current_user()
+    if user and user.is_admin:
+        return redirect(url_for("admin.dashboard"))
+    if user:
+        return redirect(url_for("user.dashboard"))
     return render_template("public/home.html", user=user)
 
 

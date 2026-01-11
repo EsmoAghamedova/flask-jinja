@@ -62,7 +62,7 @@ def login():
                     return redirect(next_page)
                 if user.is_admin:
                     return redirect(url_for("admin.dashboard"))
-                return redirect(url_for("user.tracker"))
+                return redirect(url_for("user.dashboard"))
             flash("Invalid email or password", "danger")
         else:
             flash("Please correct the errors in the login form.", "danger")
@@ -257,4 +257,3 @@ def logout():
     session.clear()
     flash("You have been logged out.", "info")
     return redirect(url_for("public.home"))
-

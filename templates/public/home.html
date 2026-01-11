@@ -10,7 +10,7 @@
     <h2>Track Your Mood & Goals 🌿</h2>
     <p>Keep track of your daily mood, goals, and habits in one clean, peaceful space.</p>
     {% if session.get('user_id') %}
-      <a href="{{ url_for('user.tracker') }}" class="start-btn">Start Tracking</a>
+      <a href="{{ url_for('user.dashboard') }}" class="start-btn">Open Dashboard</a>
     {% else %}
       <a href="{{ url_for('auth.login') }}" class="start-btn">Start Tracking</a>
     {% endif %}

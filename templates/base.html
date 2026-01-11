@@ -8,7 +8,6 @@
 
     <link rel="shortcut icon" href="../static/img/leaf.png" type="image/x-icon" />
     <link rel="stylesheet" href="{{ url_for('static', filename='style/effects.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/newyear.css') }}" />
 
     {% block css %}
 
@@ -22,39 +21,7 @@
   </head>
 
   <body>
-    <div id="snowflakes" aria-hidden="true"></div>
     {% include 'components/_navbar.html' %}
-
-    <!-- New Year Popup (shows first). After close, the inline bar will appear under navbar -->
-    <div id="newYearPopup" class="new-year-popup-container">
-      <div class="new-year-card">
-        <div class="confetti-container" id="confettiPopup"></div>
-        <span class="close-btn" onclick="closeNewYearPopup()">×</span>
-        <h1 class="new-year-title">🎉 Happy New Year 2026! 🎉</h1>
-        <p class="congratulations-text">Welcome to a new chapter of growth and peace!</p>
-        <p class="new-year-message" id="popupCongrats" style="display:block">🎉 It's time to celebrate! Wishing you a joyful and peaceful year ahead. 💚✨</p>
-      </div>
-    </div>
-
-    <!-- Inline New Year Countdown Bar (appears under navbar after popup is closed) -->
-    <div id="newYearBar" class="new-year-bar" style="display:none">
-      <div class="container d-flex align-items-center justify-content-between">
-        <div class="bar-left">
-          <strong>🎉 Happy New Year 2026! 🎉</strong>
-        </div>
-
-        <div class="countdown-display" id="countdownDisplay" style="display:none"></div>
-
-        <div class="congrats-message" id="congratsMessage" style="display:block">
-          <strong>Wishing you a joyful and peaceful year ahead.</strong>
-        </div>
-
-        <div class="bar-close ms-3">
-          <button type="button" class="btn btn-sm btn-outline-light" onclick="closeNewYearBar()">✕</button>
-        </div>
-      </div>
-      <div class="confetti-container" id="confettiContainer"></div>
-    </div>
 
     {% block content %}
 
@@ -63,107 +30,6 @@
     {% include 'components/_footer.html' %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- New Year Inline Celebration and Confetti Script -->
-    <script>
-      let confettiTimeout = null
-      
-      const NEW_YEAR_POPUP_KEY = 'newYearPopupShown_2026'
-      const NEW_YEAR_BAR_KEY = 'newYearBarClosed_2026'
-      
-      function createConfetti(containerId = 'confettiContainer', duration = 8000) {
-        const container = document.getElementById(containerId)
-        if (!container) return
-        container.innerHTML = ''
-      
-        const confettiPieces = 120
-        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F']
-        for (let i = 0; i < confettiPieces; i++) {
-          const confetti = document.createElement('div')
-          confetti.className = 'confetti-piece'
-          confetti.style.left = Math.random() * 100 + '%'
-          confetti.style.top = -10 + 'px'
-          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
-          confetti.style.opacity = (0.5 + Math.random() * 0.8).toFixed(2)
-          confetti.style.width = 6 + Math.random() * 12 + 'px'
-          confetti.style.height = confetti.style.width
-          confetti.style.animation = `fall ${2 + Math.random() * 3}s linear forwards`
-          container.appendChild(confetti)
-        }
-      
-        if (confettiTimeout) clearTimeout(confettiTimeout)
-        confettiTimeout = setTimeout(() => {
-          if (container) container.innerHTML = ''
-        }, duration)
-      }
-      
-      function closeNewYearPopup() {
-        const popup = document.getElementById('newYearPopup')
-        const bar = document.getElementById('newYearBar')
-        const confettiPopup = document.getElementById('confettiPopup')
-      
-        // remember: popup was seen/closed
-        localStorage.setItem(NEW_YEAR_POPUP_KEY, '1')
-      
-        if (popup) {
-          popup.style.opacity = '0'
-          setTimeout(() => {
-            popup.style.display = 'none'
-      
-            const barClosed = localStorage.getItem(NEW_YEAR_BAR_KEY) === '1'
-            if (bar && !barClosed) bar.style.display = 'block'
-      
-            if (confettiPopup) confettiPopup.innerHTML = ''
-          }, 250)
-        }
-      
-        if (confettiTimeout) {
-          clearTimeout(confettiTimeout)
-          confettiTimeout = null
-        }
-      }
-      
-      function closeNewYearBar() {
-        // remember: bar was closed
-        localStorage.setItem(NEW_YEAR_BAR_KEY, '1')
-      
-        const bar = document.getElementById('newYearBar')
-        const confetti = document.getElementById('confettiContainer')
-      
-        if (bar) bar.style.display = 'none'
-        if (confetti) confetti.innerHTML = ''
-      }
-      
-      document.addEventListener('DOMContentLoaded', function () {
-        const popup = document.getElementById('newYearPopup')
-        const bar = document.getElementById('newYearBar')
-        const popupCongrats = document.getElementById('popupCongrats')
-      
-        const popupSeen = localStorage.getItem(NEW_YEAR_POPUP_KEY) === '1'
-        const barClosed = localStorage.getItem(NEW_YEAR_BAR_KEY) === '1'
-      
-        if (!popupSeen) {
-          if (popup) {
-            popup.style.display = 'flex'
-            popup.style.opacity = '1'
-            popup.addEventListener('click', (e) => {
-              if (e.target === popup) closeNewYearPopup()
-            })
-          }
-      
-          if (popupCongrats) popupCongrats.style.display = 'block'
-          document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeNewYearPopup()
-          })
-      
-          createConfetti('confettiPopup', 12000)
-        } else {
-          if (popup) popup.style.display = 'none'
-          if (bar && !barClosed) bar.style.display = 'block'
-          if (bar && barClosed) bar.style.display = 'none'
-        }
-      })
-    </script>
-
     <script>
       setTimeout(() => {
         const alertNode = document.querySelector('[role="alert"]')
@@ -171,23 +37,6 @@
           alertNode.remove()
         }
       }, 5000)
-    </script>
-    <script>
-      const snowContainer = document.getElementById('snowflakes')
-      if (snowContainer) {
-        const flakes = 40
-        for (let i = 0; i < flakes; i++) {
-          const flake = document.createElement('span')
-          flake.className = 'snowflake'
-          flake.textContent = '❄'
-          flake.style.left = Math.random() * 100 + 'vw'
-          flake.style.animationDelay = Math.random() * 5 + 's'
-          flake.style.animationDuration = 6 + Math.random() * 8 + 's'
-          flake.style.opacity = (0.3 + Math.random() * 0.6).toFixed(2)
-          flake.style.fontSize = 12 + Math.random() * 14 + 'px'
-          snowContainer.appendChild(flake)
-        }
-      }
     </script>
   </body>
 </html>

@@ -1,0 +1,27 @@
+.dashboard-card h4 {
+  margin-bottom: 10px;
+}
+
+.dashboard .link-muted {
+  color: #00695c;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.dashboard .link-muted:hover {
+  text-decoration: underline;
+}
+
+.dashboard .list-group-item {
+  background: transparent;
+  border-color: rgba(0, 77, 64, 0.08);
+}
+
+.dashboard .badge-card {
+  background: #f3f8f8;
+}
+
+.todo-lists h6,
+.habit-list h6 {
+  font-weight: 600;
+}
