@@ -6,18 +6,52 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style/dashboard.css') }}" />
 {% endblock %}
 
-{% block content %}
-  <section class="container mt-5 dashboard">
-    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-      <div>
-        <h2 class="mb-2">Welcome back, {{ user.username }} 👋</h2>
-        <p class="text-muted mb-0">Your mood tracker, habits, to-dos, and badges—together in one space.</p>
-      </div>
-      <div class="d-flex gap-2">
-        <a href="{{ url_for('user.progress') }}" class="btn start-btn">View Progress</a>
-        <a href="{{ url_for('user.badges') }}" class="btn btn-outline-secondary">All Badges</a>
-      </div>
+{% block navbar %}
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-brand">
+      <a href="{{ url_for('user.dashboard') }}" class="brand-link">CalmSpace</a>
+      <span class="badge bg-success-subtle text-success">User</span>
     </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-link active" href="{{ url_for('user.dashboard') }}">🏠 Dashboard</a>
+      <a class="sidebar-link" href="{{ url_for('user.mood') }}">🧠 Mood Tracker</a>
+      <a class="sidebar-link" href="{{ url_for('user.todo') }}">✅ To-Do</a>
+      <a class="sidebar-link" href="{{ url_for('user.habit') }}">🔥 Habits</a>
+      <a class="sidebar-link" href="{{ url_for('user.badges') }}">🏅 Badges</a>
+      <a class="sidebar-link" href="{{ url_for('user.progress') }}">📈 Progress</a>
+      <a class="sidebar-link" href="{{ url_for('settings.index') }}">⚙️ Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="text-muted small">Signed in as</span>
+      <strong>{{ user.username }}</strong>
+      <a class="btn btn-outline-secondary btn-sm mt-2" href="{{ url_for('auth.logout') }}">Logout</a>
+    </div>
+  </aside>
+{% endblock %}
+
+{% block content %}
+  <div class="dashboard-layout">
+    <div class="dashboard-main">
+      <section class="container dashboard">
+        {% with messages=get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mb-3">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mb-2" role="alert">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+          <div>
+            <h2 class="mb-2">Welcome back, {{ user.username }} 👋</h2>
+            <p class="text-muted mb-0">Your mood tracker, habits, to-dos, and badges—together in one space.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="{{ url_for('user.progress') }}" class="btn start-btn">View Progress</a>
+            <a href="{{ url_for('user.badges') }}" class="btn btn-outline-secondary">All Badges</a>
+          </div>
+        </div>
 
     <div class="row g-4 mb-4">
       <div class="col-md-3">
@@ -234,5 +268,7 @@
         </div>
       </div>
     </div>
-  </section>
+      </section>
+    </div>
+  </div>
 {% endblock %}
