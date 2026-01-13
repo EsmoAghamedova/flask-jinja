@@ -143,6 +143,7 @@ with app.app_context():
                 app.add_url_rule(rule, endpoint=endpoint, view_func=view)
 
     _add_alias('/', 'home', 'public.home')
+    _add_alias('/dashboard', 'dashboard', 'user.dashboard')
     _add_alias('/tracker', 'tracker', 'user.tracker')
     _add_alias('/mood', 'mood', 'user.mood', methods=['GET', 'POST'])
     _add_alias('/habit', 'habit', 'user.habit', methods=['GET', 'POST'])

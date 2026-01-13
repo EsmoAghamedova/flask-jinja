@@ -15,24 +15,78 @@ bp = Blueprint("user", __name__)
 @bp.route("/tracker")
 @login_required
 def tracker():
+    return redirect(url_for("user.dashboard"))
+
+
+@bp.route("/dashboard")
+@login_required
+def dashboard():
     user = get_current_user()
     if user.is_admin:
         return redirect(url_for("admin.dashboard"))
+
+    mood_form = MoodForm()
+    todo_form = ToDoForm()
+    habit_form = HabitTrackerForm()
+    action_form = ActionForm()
+
     mood_count = Mood.query.filter_by(user_id=user.id).count()
     todo_count = ToDo.query.filter_by(user_id=user.id).count()
     todo_done_count = ToDo.query.filter_by(user_id=user.id, done=True).count()
     habit_count = Habit.query.filter_by(user_id=user.id).count()
     badges = calculate_badges(user.id)
 
+    recent_moods = (
+        Mood.query.filter_by(user_id=user.id)
+        .order_by(Mood.created_at.desc())
+        .limit(5)
+        .all()
+    )
+    active_todos = (
+        ToDo.query.filter_by(user_id=user.id, done=False)
+        .order_by(ToDo.created_at.desc())
+        .limit(5)
+        .all()
+    )
+    completed_todos = (
+        ToDo.query.filter_by(user_id=user.id, done=True)
+        .order_by(ToDo.created_at.desc())
+        .limit(5)
+        .all()
+    )
+    habits = (
+        Habit.query.filter_by(user_id=user.id)
+        .order_by(Habit.created_at.desc())
+        .limit(6)
+        .all()
+    )
+
+    today = date.today()
+    entries_today = HabitEntry.query.join(Habit).filter(
+        Habit.user_id == user.id,
+        HabitEntry.date == today,
+    ).all()
+    completed_today = set(e.habit_id for e in entries_today)
+
     return render_template(
-        "user/tracker.html",
+        "user/dashboard.html",
+        user=user,
         summary={
             "moods": mood_count,
             "todos": todo_count,
             "todos_done": todo_done_count,
             "habits": habit_count,
         },
+        mood_form=mood_form,
+        todo_form=todo_form,
+        habit_form=habit_form,
+        action_form=action_form,
         badges=badges,
+        recent_moods=recent_moods,
+        active_todos=active_todos,
+        completed_todos=completed_todos,
+        habits=habits,
+        completed_today=completed_today,
     )
 
 

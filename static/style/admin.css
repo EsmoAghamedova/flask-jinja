@@ -79,3 +79,14 @@ footer {
   font-size: 14px;
   opacity: 0.8;
 }
+
+@media (max-width: 768px) {
+  .start-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .table > :not(caption) > * > * {
+    font-size: 0.9rem;
+  }
+}

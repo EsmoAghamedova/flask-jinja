@@ -184,3 +184,32 @@ footer {
     font-size: 14px;
     opacity: 0.8;
 }
+
+@media (max-width: 992px) {
+    .cards-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero h2 {
+        font-size: 2rem;
+        margin-top: 30px;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .carousel-img {
+        height: 240px;
+    }
+}
+
+@media (max-width: 576px) {
+    .start-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

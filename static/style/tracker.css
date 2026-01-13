@@ -199,21 +199,9 @@ footer {
     color: #00c8ff;
 }
 
-.footer-copy {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    opacity: 0.8;
-}
-
 @media (max-width: 768px) {
-    .cards-row {
-        flex-direction: column;
-    }
-
-    header {
-        flex-direction: column;
-        gap: 15px;
+    .hero {
+        padding: 40px 16px 10px;
     }
 
     .hero h2 {
@@ -223,4 +211,31 @@ footer {
     .hero p {
         font-size: 1rem;
     }
+
+    .cards-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .glass-card {
+        padding: 22px 18px;
+    }
+
+    .badge-card {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .start-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.footer-copy {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    opacity: 0.8;
 }

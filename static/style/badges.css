@@ -148,3 +148,21 @@ footer {
   font-size: 14px;
   opacity: 0.8;
 }
+
+@media (max-width: 768px) {
+  .stats-pill {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .badge-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .badge-card {
+    padding: 16px;
+  }
+}
