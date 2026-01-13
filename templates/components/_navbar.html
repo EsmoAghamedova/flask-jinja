@@ -5,7 +5,7 @@
 
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav ms-auto">
-        <!-- {% with messages=get_flashed_messages(with_categories=true) %}
+        {% with messages=get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
               <li class="nav-item">
@@ -13,7 +13,7 @@
               </li>
             {% endfor %}
           {% endif %}
-        {% endwith %} -->
+        {% endwith %}
 
         {% if session.get('user_id') and current_user and current_user.is_admin %}
           <li class="nav-item">

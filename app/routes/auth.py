@@ -1,6 +1,9 @@
+import token
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from datetime import datetime
 
+from app.routes import user
+from app.utils import email
 from extensions import db
 from forms import LoginForm, ResetPasswordForm, SignupForm, ResendForm, ForgotPasswordForm
 from models import User
@@ -22,12 +25,14 @@ def signup():
                 flash("Username or email already registered", "danger")
                 return redirect(url_for("auth.signup"))
 
-            user = User(username=form.username.data, email=form.email.data)
+            email = form.email.data.strip().lower()
+            username = form.username.data.strip()
+            user = User(username=username, email=email)
             user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()
             
-            token = generate_token(user.id, "verify", expires_in=86400)
+            token, _ = generate_token(user.id, "verify", expires_in=86400)
             verify_link = url_for("auth.verify", token=token, _external=True)
             print("VERIFY LINK:", verify_link)
             
@@ -137,7 +142,7 @@ def resend():
             user = User.query.filter_by(email=email).first()
             
             if user and not user.email_verified:
-                token = generate_token(user.id, "verify", expires_in=86400)
+                token, _ = generate_token(user.id, "verify", expires_in=86400)
                 verify_link = url_for("auth.verify", token=token, _external=True)
                 print("VERIFY LINK:", verify_link)
                     
@@ -186,7 +191,10 @@ def forgot_password():
         user = User.query.filter_by(email=email).first()
 
         if user:
-            token = generate_token(user.id, "reset", expires_in=600)  # 10 minutes
+            user.password_reset_used_at = None
+            db.session.commit()
+
+            token, _ = generate_token(user.id, "reset", expires_in=600)  # ✅ FIX
             reset_link = url_for("auth.reset_password", token=token, _external=True)
 
             subject = "Reset your password"
