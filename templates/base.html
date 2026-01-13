@@ -21,7 +21,9 @@
   </head>
 
   <body>
-    {% include 'components/_navbar.html' %}
+    {% block navbar %}
+      {% include 'components/_navbar.html' %}
+    {% endblock %}
 
     {% block content %}
 
