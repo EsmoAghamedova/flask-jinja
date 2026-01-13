@@ -17,6 +17,39 @@
   top: 0;
 }
 
+@media (max-width: 991px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .dashboard-sidebar {
+    width: 100%;
+    min-height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 77, 64, 0.08);
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .sidebar-link {
+    flex: 1 1 45%;
+  }
+
+  .dashboard-main {
+    padding: 24px 0 40px;
+  }
+}
+
+@media (max-width: 575px) {
+  .sidebar-link {
+    flex: 1 1 100%;
+  }
+}
+
 .sidebar-brand {
   display: flex;
   align-items: center;
