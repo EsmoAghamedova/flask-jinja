@@ -90,6 +90,31 @@ def ensure_schema():
         db.session.execute(
             text("ALTER TABLE users ADD COLUMN password_reset_used_at TIMESTAMPTZ")
         )
+    
+    if not inspector.has_table("chat_sessions"):
+        db.session.execute(
+            text("""
+            CREATE TABLE chat_sessions (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            )
+            """)
+        )
+        
+    if not inspector.has_table("chat_messages"):
+        db.session.execute(
+            text("""
+            CREATE TABLE chat_messages (
+                id SERIAL PRIMARY KEY,
+                session_id INTEGER NOT NULL REFERENCES chat_sessions(id) ON DELETE CASCADE,
+                role VARCHAR(20) NOT NULL,
+                content TEXT NOT NULL,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            )
+            """)
+        )
 
     db.session.commit()
 
