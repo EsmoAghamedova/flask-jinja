@@ -5,8 +5,8 @@ from flask import Blueprint, abort, flash, redirect, render_template, request, u
 
 from app.common.auth import get_current_user, login_required
 from app.common.user_helpers import calculate_badges, get_badge_definitions, get_user_stats
-from extensions import db
-from forms import ActionForm, HabitTrackerForm, MoodForm, ToDoForm
+from extensions import db, client
+from forms import ActionForm, HabitTrackerForm, MoodForm, ToDoForm, AskForm
 from models import Habit, HabitEntry, Mood, ToDo
 
 bp = Blueprint("user", __name__)
@@ -479,3 +479,24 @@ def progress():
         habits_data=list(habits_done_count.values()),
         days=days,
     )
+    
+# @bp.route('/ask', methods=['GET', 'POST'])
+# def ai_page():
+#     form = AskForm() 
+#     answer = None
+#     if form.validate_on_submit():
+#         question = form.question.data
+#         try:
+#             chat_completion = client.chat.completions.create(
+#                 messages=[
+#                     {
+#                         "role": "user",
+#                         "content": question,
+#                     }
+#                 ],
+#                 model="llama-3.3-70b-versatile",
+#             )
+#             answer = chat_completion.choices[0].message.content
+#         except Exception as e:
+#             answer = f"შეცდომა: {str(e)}"
+#     return render_template('ask_ai.html', form=form, answer=answer)

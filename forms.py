@@ -118,3 +118,7 @@ class DeleteAccountForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm = BooleanField('I understand my account will be deleted', validators=[InputRequired()])
     submit = SubmitField('Delete account')
+
+class AskForm(FlaskForm):
+    question = StringField("Ask AI", validators=[DataRequired(), Length(max=200, message="Maximum 200 characters allowed.")])
+    submit = SubmitField("Send")

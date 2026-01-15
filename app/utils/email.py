@@ -11,6 +11,12 @@ EMAIL_ENABLED = os.getenv("EMAIL_ENABLED", "true").lower() == "true"
 
 
 def send_email(to, subject, body):
+    print("EMAIL_ENABLED =", EMAIL_ENABLED)
+    print("SMTP_USER =", SMTP_USER)
+    print("FROM_EMAIL =", FROM_EMAIL)
+    print("SMTP_PASS exists =", bool(SMTP_PASS))
+
+    
     if not EMAIL_ENABLED:
         print(f"[EMAIL DISABLED] To={to} Subject={subject}")
         return

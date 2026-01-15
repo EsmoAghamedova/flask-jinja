@@ -16,5 +16,6 @@ SQLAlchemy==2.0.36
 psycopg==3.2.3
 PyJWT==2.10.1
 resend==2.19.0
-
+groq==1.0.0
+python-dotenv==1.2.1
 gunicorn==23.0.0
