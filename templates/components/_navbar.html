@@ -5,15 +5,6 @@
 
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav ms-auto">
-        {% with messages=get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <li class="nav-item">
-                <div class="alert alert-{{ category }} mb-0" role="alert">{{ message }}</div>
-              </li>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
 
         {% if session.get('user_id') and current_user and current_user.is_admin %}
           <li class="nav-item">
