@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+AI Page
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style/chat.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="chat-page">
+
+  <form class="row g-2 mt-1" method="post">
+    {{ form.hidden_tag() }}
+
+    {% for errors in form.errors.values() %}
+      <div class="alert alert-danger">
+        {% for error in errors %}
+          * {{ error }}<br />
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <div class="col-6 offset-3 my-2 chat-box">
+
+      <!-- USER -->
+      <div class="row mt-2 chat-user">
+        <b>User:</b>
+        {{ form.question(class='form-control chat-input', placeholder=form.question.label.text) }}
+      </div>
+
+      <!-- AI -->
+      {% if answer %}
+        <div class="row mt-3 chat-ai">
+          <b>AI:</b>
+          <div class="form-control chat-answer">
+            {{ answer }}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="row mt-3">
+        {{ form.submit(class='btn btn-primary w-100') }}
+      </div>
+
+    </div>
+  </form>
+
+</div>
+{% endblock %}

@@ -7,8 +7,8 @@ from app.common.auth import get_current_user, login_required
 from app.common.user_helpers import calculate_badges, get_badge_definitions, get_user_stats
 from extensions import db, client
 from forms import ActionForm, HabitTrackerForm, MoodForm, ToDoForm, AskForm
-from models import Habit, HabitEntry, Mood, ToDo
-
+from models import Habit, HabitEntry, Mood, ToDo, ChatSession, ChatMessage
+from app.utils.chat_memory import get_or_create_active_session, load_recent_messages
 bp = Blueprint("user", __name__)
 
 
@@ -480,23 +480,86 @@ def progress():
         days=days,
     )
     
-# @bp.route('/ask', methods=['GET', 'POST'])
-# def ai_page():
-#     form = AskForm() 
-#     answer = None
-#     if form.validate_on_submit():
-#         question = form.question.data
-#         try:
-#             chat_completion = client.chat.completions.create(
-#                 messages=[
-#                     {
-#                         "role": "user",
-#                         "content": question,
-#                     }
-#                 ],
-#                 model="llama-3.3-70b-versatile",
-#             )
-#             answer = chat_completion.choices[0].message.content
-#         except Exception as e:
-#             answer = f"შეცდომა: {str(e)}"
-#     return render_template('ask_ai.html', form=form, answer=answer)
+@bp.route("/ask", methods=["GET", "POST"])
+def ai_page():
+    form = AskForm()
+    answer = None
+
+    user = get_current_user()
+    if not user:
+        flash("Please log in to use the AI coach.", "warning")
+        return redirect(url_for("auth.login"))
+
+    chat_session = get_or_create_active_session(user.id)
+
+    if form.validate_on_submit():
+        question = form.question.data.strip()
+
+        db.session.add(
+            ChatMessage(
+                session_id=chat_session.id,
+                role="user",
+                content=question,
+            )
+        )
+        db.session.commit()
+
+        history = load_recent_messages(chat_session.id, limit=20)
+
+        SYSTEM_PROMPT = (
+            "You are CalmSpace Coach. "
+            "Be friendly, supportive, and practical. "
+            "Give short advice and ask at most one question."
+        )
+
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        for msg in history:
+            messages.append(
+                {
+                    "role": msg.role,
+                    "content": msg.content,
+                }
+            )
+
+        try:
+            chat_completion = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=messages,
+            )
+
+            answer = chat_completion.choices[0].message.content
+
+            db.session.add(
+                ChatMessage(
+                    session_id=chat_session.id,
+                    role="assistant",
+                    content=answer,
+                )
+            )
+            db.session.commit()
+
+        except Exception as e:
+            answer = f"შეცდომა: {str(e)}"
+
+    return render_template(
+        "user/ask_ai.html",
+        form=form,
+        answer=answer,
+    )
+
+@bp.route("/ask/new", methods=["POST"])
+def ai_new_chat():
+    user = get_current_user()
+    if not user:
+        return redirect(url_for("auth.login"))
+
+    session = ChatSession.query.filter_by(
+        user_id=user.id,
+        is_active=True
+    ).first()
+
+    if session:
+        session.is_active = False
+        db.session.commit()
+
+    return redirect(url_for("user.ai_page"))
