@@ -33,15 +33,6 @@
   <div class="dashboard-layout">
     <div class="dashboard-main">
       <section class="container dashboard">
-        {% with messages=get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            <div class="mb-3">
-              {% for category, message in messages %}
-                <div class="alert alert-{{ category }} mb-2" role="alert">{{ message }}</div>
-              {% endfor %}
-            </div>
-          {% endif %}
-        {% endwith %}
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
           <div>
             <h2 class="mb-2">Welcome back, {{ user.username }} 👋</h2>
