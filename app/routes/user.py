@@ -205,7 +205,8 @@ def habit():
     completed_today = set(e.habit_id for e in entries_today)
 
     start_date = today - timedelta(days=13)
-    last_14_days = [start_date + timedelta(days=offset) for offset in range(14)]
+    last_14_days = [start_date +
+                    timedelta(days=offset) for offset in range(14)]
     recent_entries = HabitEntry.query.join(Habit).filter(
         Habit.user_id == user.id,
         HabitEntry.date >= start_date,
@@ -214,9 +215,12 @@ def habit():
     for entry in recent_entries:
         completion_map.setdefault(entry.habit_id, []).append(entry.date)
 
-    daily_habits = [habit for habit in habits if (habit.frequency or "").lower() == "daily"]
-    weekly_habits = [habit for habit in habits if (habit.frequency or "").lower() == "weekly"]
-    monthly_habits = [habit for habit in habits if (habit.frequency or "").lower() == "monthly"]
+    daily_habits = [habit for habit in habits if (
+        habit.frequency or "").lower() == "daily"]
+    weekly_habits = [habit for habit in habits if (
+        habit.frequency or "").lower() == "weekly"]
+    monthly_habits = [habit for habit in habits if (
+        habit.frequency or "").lower() == "monthly"]
     other_habits = [
         habit
         for habit in habits
@@ -252,7 +256,8 @@ def habit_complete(habit_id):
         abort(403)
 
     today = date.today()
-    existing = HabitEntry.query.filter_by(habit_id=habit_id, date=today).first()
+    existing = HabitEntry.query.filter_by(
+        habit_id=habit_id, date=today).first()
     if existing:
         db.session.delete(existing)
         db.session.commit()
@@ -311,7 +316,8 @@ def habit_stats():
     week_start = today - timedelta(days=today.weekday())
     month_start = date(today.year, today.month, 1)
 
-    habits = Habit.query.filter_by(user_id=user.id).order_by(Habit.created_at.desc()).all()
+    habits = Habit.query.filter_by(user_id=user.id).order_by(
+        Habit.created_at.desc()).all()
     entries = HabitEntry.query.join(Habit).filter(
         Habit.user_id == user.id,
         HabitEntry.date >= month_start,
@@ -322,7 +328,8 @@ def habit_stats():
     for entry in entries:
         month_counts[entry.habit_id] = month_counts.get(entry.habit_id, 0) + 1
         if entry.date >= week_start:
-            week_counts[entry.habit_id] = week_counts.get(entry.habit_id, 0) + 1
+            week_counts[entry.habit_id] = week_counts.get(
+                entry.habit_id, 0) + 1
 
     return render_template(
         "user/habit_stats.html",
@@ -437,7 +444,8 @@ def progress():
     user = get_current_user()
     today = datetime.utcnow().date()
     start_date = today - timedelta(days=days - 1)
-    labels = [(start_date + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(days)]
+    labels = [(start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+              for i in range(days)]
 
     moods_count = OrderedDict((label, 0) for label in labels)
     todos_done_count = OrderedDict((label, 0) for label in labels)
@@ -479,7 +487,8 @@ def progress():
         habits_data=list(habits_done_count.values()),
         days=days,
     )
-    
+
+
 @bp.route("/ask", methods=["GET", "POST"])
 @login_required
 def ai_page():
@@ -521,9 +530,40 @@ def ai_page():
         history = load_recent_messages(chat_session.id, limit=20)
 
         SYSTEM_PROMPT = (
-            "You are CalmSpace Coach. "
-            "Be friendly, supportive, and practical. "
-            "Give short advice and ask at most one question."
+            "You are CalmSpace Coach, a calm, friendly, and supportive wellness guide. "
+            "Your purpose is to help users feel grounded, motivated, and gently focused. "
+
+            "Core rules:\n"
+            "- Keep responses short and clear (2–5 sentences).\n"
+            "- Use a warm, kind, non-judgmental tone.\n"
+            "- Give practical advice that can be done today.\n"
+            "- Focus on small, realistic steps.\n"
+            "- Encourage progress, not perfection.\n"
+
+            "Emotional awareness:\n"
+            "- If the user sounds stressed, sad, or overwhelmed, respond with empathy first.\n"
+            "- Validate feelings without exaggeration or alarm.\n"
+            "- Do not use medical, clinical, or diagnostic language.\n"
+
+            "Interaction style:\n"
+            "- Ask at most ONE gentle question at the end, or none if not needed.\n"
+            "- Do not ask many follow-up questions.\n"
+            "- Do not give long explanations or lectures.\n"
+
+            "Safety & boundaries:\n"
+            "- Never encourage harmful, extreme, or unsafe actions.\n"
+            "- Do not shame, pressure, or compare users to others.\n"
+
+            "Personality:\n"
+            "- Sound like a supportive coach or mentor, not a therapist.\n"
+            "- Be calm, encouraging, and reassuring.\n"
+            "- Use simple, friendly language.\n"
+
+            "When appropriate, gently suggest:\n"
+            "- breathing or grounding exercises\n"
+            "- short breaks or rest\n"
+            "- planning one small task\n"
+            "- brief reflection or journaling\n"
         )
 
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
