@@ -481,16 +481,30 @@ def progress():
     )
     
 @bp.route("/ask", methods=["GET", "POST"])
+@login_required
 def ai_page():
     form = AskForm()
     answer = None
 
     user = get_current_user()
-    if not user:
-        flash("Please log in to use the AI coach.", "warning")
-        return redirect(url_for("auth.login"))
+    requested_session_id = request.args.get("session_id", type=int)
+    chat_session = None
 
-    chat_session = get_or_create_active_session(user.id)
+    if requested_session_id:
+        requested_session = ChatSession.query.filter_by(
+            id=requested_session_id,
+            user_id=user.id,
+        ).first()
+        if requested_session:
+            ChatSession.query.filter_by(user_id=user.id, is_active=True).update(
+                {"is_active": False}
+            )
+            requested_session.is_active = True
+            db.session.commit()
+            chat_session = requested_session
+
+    if not chat_session:
+        chat_session = get_or_create_active_session(user.id)
 
     if form.validate_on_submit():
         question = form.question.data.strip()
@@ -541,21 +555,51 @@ def ai_page():
         except Exception as e:
             answer = f"შეცდომა: {str(e)}"
 
+    sessions = (
+        ChatSession.query.filter_by(user_id=user.id)
+        .order_by(ChatSession.created_at.desc())
+        .all()
+    )
+    session_overviews = []
+    for session in sessions:
+        last_message = (
+            ChatMessage.query.filter_by(session_id=session.id)
+            .order_by(ChatMessage.created_at.desc())
+            .first()
+        )
+        preview = last_message.content if last_message else "New chat"
+        session_overviews.append(
+            {
+                "id": session.id,
+                "created_at": session.created_at,
+                "preview": preview,
+            }
+        )
+
+    messages_for_display = (
+        ChatMessage.query.filter_by(session_id=chat_session.id)
+        .order_by(ChatMessage.created_at.asc())
+        .all()
+    )
+
     return render_template(
         "user/ask_ai.html",
         form=form,
         answer=answer,
+        messages=messages_for_display,
+        sessions=session_overviews,
+        active_session=chat_session,
     )
 
+
 @bp.route("/ask/new", methods=["POST"])
+@login_required
 def ai_new_chat():
     user = get_current_user()
-    if not user:
-        return redirect(url_for("auth.login"))
 
     session = ChatSession.query.filter_by(
         user_id=user.id,
-        is_active=True
+        is_active=True,
     ).first()
 
     if session:

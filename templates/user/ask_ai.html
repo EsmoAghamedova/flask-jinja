@@ -9,43 +9,66 @@ AI Page
 {% endblock %}
 
 {% block content %}
-<div class="chat-page">
-
-  <form class="row g-2 mt-1" method="post">
-    {{ form.hidden_tag() }}
-
-    {% for errors in form.errors.values() %}
-      <div class="alert alert-danger">
-        {% for error in errors %}
-          * {{ error }}<br />
-        {% endfor %}
+<div class="container py-4 chat-shell">
+  <div class="chat-card shadow-sm">
+    <div class="chat-header">
+      <div>
+        <p class="chat-title">AI Coach</p>
+        <p class="chat-subtitle">Supportive guidance with your recent chat history.</p>
       </div>
-    {% endfor %}
-
-    <div class="col-6 offset-3 my-2 chat-box">
-
-      <!-- USER -->
-      <div class="row mt-2 chat-user">
-        <b>User:</b>
-        {{ form.question(class='form-control chat-input', placeholder=form.question.label.text) }}
+      <div class="chat-header-actions">
+        <form method="post" action="{{ url_for('user.ai_new_chat') }}">
+          {{ form.hidden_tag() }}
+          <button type="submit" class="btn btn-outline-primary btn-sm">New chat</button>
+        </form>
+        <form method="get" action="{{ url_for('user.ai_page') }}" class="chat-session-picker">
+          <select name="session_id" class="form-select form-select-sm">
+            {% for session in sessions %}
+              <option value="{{ session.id }}" {% if session.id == active_session.id %}selected{% endif %}>
+                {{ session.created_at.strftime('%b %d, %Y') }} — {{ session.preview|truncate(40, True, '...') }}
+              </option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-outline-secondary btn-sm">Open</button>
+        </form>
       </div>
+    </div>
 
-      <!-- AI -->
-      {% if answer %}
-        <div class="row mt-3 chat-ai">
-          <b>AI:</b>
-          <div class="form-control chat-answer">
-            {{ answer }}
+    <div class="chat-body">
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="msg-row {% if msg.role == 'user' %}user{% else %}ai{% endif %}">
+            <div>
+              <div class="msg {% if msg.role == 'user' %}user{% else %}ai{% endif %}">
+                {{ msg.content }}
+              </div>
+              <div class="msg-meta">{{ msg.created_at.strftime('%b %d, %H:%M') }}</div>
+            </div>
           </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-muted text-center py-5">
+          Start a new conversation and your messages will appear here.
         </div>
       {% endif %}
-
-      <div class="row mt-3">
-        {{ form.submit(class='btn btn-primary w-100') }}
-      </div>
-
     </div>
-  </form>
 
+    <div class="chat-footer">
+      <form method="post">
+        {{ form.hidden_tag() }}
+        {% for errors in form.errors.values() %}
+          <div class="alert alert-danger">
+            {% for error in errors %}
+              * {{ error }}<br />
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <div class="input-group">
+          {{ form.question(class='form-control chat-input', placeholder='Type your message...') }}
+          {{ form.submit(class='btn btn-primary chat-send') }}
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}

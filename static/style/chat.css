@@ -5,9 +5,10 @@
 
 .chat-card {
     border-radius: 18px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    background: #fff;
+    border: 1px solid rgba(20, 83, 45, 0.18);
+    background: #f8fdf9;
     overflow: hidden;
+    box-shadow: 0 14px 30px rgba(13, 87, 51, 0.08);
 }
 
 .chat-header {
@@ -17,18 +18,34 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .chat-title {
     font-weight: 700;
     margin: 0;
     font-size: 1.05rem;
+    color: #14532d;
 }
 
 .chat-subtitle {
     margin: 0;
     font-size: 0.9rem;
     opacity: 0.75;
+    color: #3f6f53;
+}
+
+.chat-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.chat-session-picker {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 .chat-body {
@@ -36,7 +53,7 @@
     /* change if you want */
     overflow-y: auto;
     padding: 16px;
-    background: rgba(0, 0, 0, 0.02);
+    background: #f1faf3;
 }
 
 /* message row */
@@ -58,34 +75,35 @@
 .msg {
     max-width: 78%;
     padding: 10px 12px;
-    border-radius: 16px;
+    border-radius: 18px;
     line-height: 1.35;
     white-space: pre-wrap;
     /* keep new lines */
     word-wrap: break-word;
     word-break: break-word;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 16px rgba(17, 94, 50, 0.12);
 }
 
 /* user bubble */
 .msg.user {
-    border-bottom-right-radius: 6px;
-    background: #1f6feb;
-    color: #fff;
+    border-bottom-right-radius: 8px;
+    background: linear-gradient(135deg, #2f855a, #38a169);
+    color: #f0fff4;
 }
 
 /* ai bubble */
 .msg.ai {
-    border-bottom-left-radius: 6px;
+    border-bottom-left-radius: 8px;
     background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.07);
+    border: 1px solid rgba(20, 83, 45, 0.12);
 }
 
 /* meta text under bubble */
 .msg-meta {
     font-size: 0.78rem;
-    opacity: 0.65;
+    opacity: 0.7;
     margin-top: 4px;
+    color: #2f5f43;
 }
 
 .msg-row.user .msg-meta {
@@ -95,19 +113,53 @@
 /* footer input area */
 .chat-footer {
     padding: 12px;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-    background: #fff;
+    border-top: 1px solid rgba(20, 83, 45, 0.12);
+    background: #ffffff;
 }
 
 .chat-input {
     resize: none;
     min-height: 44px;
     max-height: 120px;
+    border-radius: 14px;
+    border: 1px solid rgba(20, 83, 45, 0.2);
 }
 
 .chat-send {
-    border-radius: 12px;
+    border-radius: 14px;
     font-weight: 600;
+    background: #2f855a;
+    border-color: #2f855a;
+}
+
+.chat-send:hover,
+.chat-send:focus {
+    background: #276749;
+    border-color: #276749;
+}
+
+.chat-header .btn-outline-primary {
+    color: #2f855a;
+    border-color: rgba(47, 133, 90, 0.5);
+}
+
+.chat-header .btn-outline-primary:hover,
+.chat-header .btn-outline-primary:focus {
+    color: #ffffff;
+    background: #2f855a;
+    border-color: #2f855a;
+}
+
+.chat-header .btn-outline-secondary {
+    color: #2f5f43;
+    border-color: rgba(47, 95, 67, 0.4);
+}
+
+.chat-header .btn-outline-secondary:hover,
+.chat-header .btn-outline-secondary:focus {
+    color: #ffffff;
+    background: #2f5f43;
+    border-color: #2f5f43;
 }
 
 /* smooth scrollbar (optional) */
@@ -122,4 +174,65 @@
 
 .chat-body::-webkit-scrollbar-track {
     background: transparent;
+}
+
+@media (max-width: 768px) {
+    .chat-body {
+        height: 420px;
+    }
+
+    .chat-session-picker {
+        width: 100%;
+    }
+
+    .chat-session-picker select {
+        flex: 1;
+    }
+}
+
+footer {
+    background: #1f1f1f;
+    color: #eee;
+    padding: 40px 0;
+}
+
+.footer-container {
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.footer-container h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links ul li {
+    margin-bottom: 6px;
+}
+
+.footer-links ul li a {
+    color: #eee;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.footer-links ul li a:hover {
+    color: #00c8ff;
+}
+
+.footer-copy {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    opacity: 0.8;
 }
