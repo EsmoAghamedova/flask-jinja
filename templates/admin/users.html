@@ -48,6 +48,11 @@
                   <label class="form-check-label me-2">Admin</label>
                   <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
                 </form>
+                <form method="post" action="{{ url_for('admin.user_change_password', user_id=user.id) }}" class="d-inline">
+                  {{ password_forms[user.id].hidden_tag() }}
+                  {{ password_forms[user.id].new_password(class='form-control d-inline-block w-auto', placeholder='New Password') }}
+                  <button type="submit" class="btn btn-sm btn-outline-info">Change Password</button>
+                </form>
                 {% if user.is_banned %}
                   <form method="post" action="{{ url_for('admin.user_unban', user_id=user.id) }}" class="d-inline">
                     {{ action_forms[user.id].hidden_tag() }}

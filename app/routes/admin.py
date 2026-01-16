@@ -3,7 +3,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from app.common.auth import admin_required, get_current_user
 from app.common.user_helpers import delete_user_account
 from extensions import db
-from forms import ActionForm, AdminUserForm, TipForm
+from forms import ActionForm, AdminUserForm, ChangePasswordFormAdmin, TipForm
 from models import Habit, Mood, Tip, ToDo, User
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -93,9 +93,18 @@ def tip_delete(tip_id):
 @admin_required
 def users():
     users = User.query.order_by(User.created_at.desc()).all()
-    role_forms = {user.id: AdminUserForm(obj=user) for user in users}
-    action_forms = {user.id: ActionForm() for user in users}
-    return render_template("admin/users.html", users=users, role_forms=role_forms, action_forms=action_forms)
+
+    role_forms = {u.id: AdminUserForm(obj=u) for u in users}
+    action_forms = {u.id: ActionForm() for u in users}  # ban/unban/delete only
+    password_forms = {u.id: ChangePasswordFormAdmin() for u in users}
+
+    return render_template(
+        "admin/users.html",
+        users=users,
+        role_forms=role_forms,
+        action_forms=action_forms,
+        password_forms=password_forms,
+    )
 
 
 @bp.route("/users/<int:user_id>/role", methods=["POST"])
@@ -140,6 +149,25 @@ def user_unban(user_id):
     user.is_banned = False
     db.session.commit()
     flash(f"Unbanned {user.username}", "success")
+    return redirect(url_for("admin.users"))
+
+@bp.route("/users/<int:user_id>/change_password", methods=["POST"])
+@admin_required
+def user_change_password(user_id):
+    user = User.query.get_or_404(user_id)
+
+    if user.is_admin:
+        flash("Cannot change password of an admin user.", "warning")
+        return redirect(url_for("admin.users"))
+
+    form = ChangePasswordFormAdmin()
+    if not form.validate_on_submit():
+        flash("Invalid request.", "danger")
+        return redirect(url_for("admin.users"))
+
+    user.set_password(form.new_password.data)
+    db.session.commit()
+    flash(f"Password changed for {user.username}", "success")
     return redirect(url_for("admin.users"))
 
 

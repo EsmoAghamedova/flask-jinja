@@ -122,3 +122,7 @@ class DeleteAccountForm(FlaskForm):
 class AskForm(FlaskForm):
     question = StringField("Ask AI", validators=[DataRequired(), Length(max=200, message="Maximum 200 characters allowed.")])
     submit = SubmitField("Send")
+    
+class ChangePasswordFormAdmin(FlaskForm):
+    new_password = PasswordField('New password', validators=[DataRequired(), Length(min=8)])
+    submit = SubmitField('Update password')
