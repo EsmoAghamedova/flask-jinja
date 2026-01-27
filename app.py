@@ -200,11 +200,13 @@ from app.routes import admin, auth, public, settings, user
 from extensions import db
 from models import Tip, User
 
+# --- Flask app setup ---
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "dev-secret-key")
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+# --- Database config ---
 db_url = os.getenv("DATABASE_URL")
 if db_url:
     db_url = db_url.replace("postgres://", "postgresql://", 1)
@@ -226,6 +228,7 @@ db.init_app(app)
 
 print("USING DATABASE:", app.config["SQLALCHEMY_DATABASE_URI"])
 
+# --- Register auth & blueprints ---
 register_auth_handlers(app)
 app.register_blueprint(public.bp)
 app.register_blueprint(auth.bp)
@@ -237,61 +240,11 @@ print("URL map:")
 for rule in app.url_map.iter_rules():
     print(rule.endpoint, "->", rule)
 
-
-# --- DB setup functions ---
-def ensure_schema():
-    """Ensure all columns and tables exist (safe for Postgres)."""
-    with db.engine.connect() as conn:
-        inspector = inspect(conn)
-
-        user_columns = {col["name"] for col in inspector.get_columns(
-            "users")} if inspector.has_table("users") else set()
-
-        # Add missing columns
-        missing_cols = [
-            ("email_verified", "BOOLEAN NOT NULL DEFAULT FALSE"),
-            ("email_verified_at", "TIMESTAMPTZ"),
-            ("is_admin", "BOOLEAN NOT NULL DEFAULT FALSE"),
-            ("is_banned", "BOOLEAN NOT NULL DEFAULT FALSE"),
-            ("created_at", "TIMESTAMPTZ"),
-            ("password_reset_jti", "VARCHAR(100)"),
-            ("password_reset_used_at", "TIMESTAMPTZ"),
-        ]
-        for col, sql_type in missing_cols:
-            if col not in user_columns:
-                conn.execute(
-                    text(f"ALTER TABLE users ADD COLUMN {col} {sql_type}"))
-
-        # Create chat tables if missing
-        if not inspector.has_table("chat_sessions"):
-            conn.execute(text("""
-                CREATE TABLE chat_sessions (
-                    id SERIAL PRIMARY KEY,
-                    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
-                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-                )
-            """))
-
-        if not inspector.has_table("chat_messages"):
-            conn.execute(text("""
-                CREATE TABLE chat_messages (
-                    id SERIAL PRIMARY KEY,
-                    session_id INTEGER NOT NULL REFERENCES chat_sessions(id) ON DELETE CASCADE,
-                    role VARCHAR(20) NOT NULL,
-                    content TEXT NOT NULL,
-                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-                )
-            """))
-
-        if not inspector.has_table("tips"):
-            Tip.__table__.create(conn)
-
-        conn.commit()
+# --- Seed data function ---
 
 
 def ensure_seed_data():
-    """Seed admin and starter tips if missing."""
+    """Seed admin user and starter tips."""
     with app.app_context():
         admin_email = os.getenv("ADMIN_EMAIL", "admin@calmspace.test")
         admin_password = os.getenv("ADMIN_PASSWORD", "admin1234")
@@ -304,14 +257,16 @@ def ensure_seed_data():
             db.session.add(admin_user)
             db.session.commit()
 
-        # Starter tips
         if Tip.query.count() == 0:
             starter_tips = [
-                Tip(title="🧘‍♀️ Meditation", body="Spend 5–10 minutes focusing on your breath.",
+                Tip(title="🧘‍♀️ Meditation",
+                    body="Spend 5–10 minutes focusing on your breath.",
                     category="Mindfulness", author=admin_user),
-                Tip(title="💧 Hydration", body="Drink a glass of water as soon as you wake up.",
+                Tip(title="💧 Hydration",
+                    body="Drink a glass of water as soon as you wake up.",
                     category="Energy", author=admin_user),
-                Tip(title="📓 Journaling", body="Write down one win and one lesson from today.",
+                Tip(title="📓 Journaling",
+                    body="Write down one win and one lesson from today.",
                     category="Reflection", author=admin_user),
             ]
             db.session.bulk_save_objects(starter_tips)
@@ -331,7 +286,6 @@ with app.app_context():
             else:
                 app.add_url_rule(rule, endpoint=endpoint, view_func=view)
 
-    # aliases
     _add_alias('/', 'home', 'public.home')
     _add_alias('/dashboard', 'dashboard', 'user.dashboard')
     _add_alias('/tracker', 'tracker', 'user.tracker')
@@ -345,15 +299,63 @@ with app.app_context():
     _add_alias('/login', 'login', 'auth.login', methods=['GET', 'POST'])
     _add_alias('/logout', 'logout', 'auth.logout')
 
-    # --- DB setup ---
+# --- DB setup (tables + schema + seed data) ---
+with app.app_context():
     try:
         db.create_all()  # create all model tables
-        ensure_schema()  # fix missing columns/tables
+
+        # --- safe schema updates (Postgres friendly) ---
+        db.session.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT FALSE")
+        db.session.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ")
+        db.session.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT FALSE")
+        db.session.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_banned BOOLEAN NOT NULL DEFAULT FALSE")
+        db.session.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ")
+        db.session.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS password_reset_jti VARCHAR(100)")
+        db.session.execute(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS password_reset_used_at TIMESTAMPTZ")
+
+        db.session.execute("""
+        CREATE TABLE IF NOT EXISTS chat_sessions (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            is_active BOOLEAN NOT NULL DEFAULT TRUE,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+        """)
+        db.session.execute("""
+        CREATE TABLE IF NOT EXISTS chat_messages (
+            id SERIAL PRIMARY KEY,
+            session_id INTEGER NOT NULL REFERENCES chat_sessions(id) ON DELETE CASCADE,
+            role VARCHAR(20) NOT NULL,
+            content TEXT NOT NULL,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+        """)
+        db.session.execute("""
+        CREATE TABLE IF NOT EXISTS tips (
+            id SERIAL PRIMARY KEY,
+            title VARCHAR(255),
+            body TEXT,
+            category VARCHAR(100),
+            author_id INTEGER REFERENCES users(id)
+        )
+        """)
+
+        db.session.commit()
+
+        # seed admin + starter tips
         ensure_seed_data()
+
     except Exception as e:
         print("DB setup error:", e)
-        raise
+        db.session.rollback()
 
-
+# --- Run app ---
 if __name__ == "__main__":
     app.run(debug=True, port=4000)
