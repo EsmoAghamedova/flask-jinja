@@ -252,6 +252,7 @@ with app.app_context():
             else:
                 app.add_url_rule(rule, endpoint=endpoint, view_func=view)
 
+    # --- aliases ---
     _add_alias('/', 'home', 'public.home')
     _add_alias('/dashboard', 'dashboard', 'user.dashboard')
     _add_alias('/tracker', 'tracker', 'user.tracker')
@@ -265,10 +266,16 @@ with app.app_context():
     _add_alias('/login', 'login', 'auth.login', methods=['GET', 'POST'])
     _add_alias('/logout', 'logout', 'auth.logout')
 
-    # --- Create tables and seed data ---
-    db.create_all()          # create all tables
-    ensure_schema()          # make sure ALTER TABLEs run
-    ensure_seed_data()       # create admin & starter tips
+    # --- DB setup ---
+    try:
+        if not USING_POSTGRES:
+            db.create_all()  # SQLite only
+        ensure_schema()      # always run this
+        ensure_seed_data()
+    except Exception as e:
+        print("DB setup error:", e)
+        raise
+
         
 if __name__ == "__main__":
     app.run(debug=True, port=4000)
