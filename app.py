@@ -264,10 +264,11 @@ with app.app_context():
     _add_alias('/signup', 'signup', 'auth.signup', methods=['GET', 'POST'])
     _add_alias('/login', 'login', 'auth.login', methods=['GET', 'POST'])
     _add_alias('/logout', 'logout', 'auth.logout')
-    
-    with app.app_context():
-    db.create_all()      # this creates all tables based on your models if they don't exist
-    ensure_seed_data()   # this adds the admin user & starter tips
 
+    # --- Create tables and seed data ---
+    db.create_all()          # create all tables
+    ensure_schema()          # make sure ALTER TABLEs run
+    ensure_seed_data()       # create admin & starter tips
+        
 if __name__ == "__main__":
     app.run(debug=True, port=4000)
