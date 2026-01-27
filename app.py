@@ -22,6 +22,10 @@ if db_url:
         db_url = "postgresql+psycopg://" + db_url[len("postgresql://"):]
 
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+    
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "connect_args": {"sslmode": "require"}
+    }
     USING_POSTGRES = True
 else:
     instance_dir = os.path.join(basedir, "instance")

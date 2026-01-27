@@ -18,4 +18,5 @@ PyJWT==2.10.1
 resend==2.19.0
 groq==1.0.0
 python-dotenv==1.2.1
+psycopg-binary==3.3.2
 gunicorn==23.0.0
